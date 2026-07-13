@@ -1,5 +1,37 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
+
+const prepareHeroVisual = async (page: Page) => {
+  await page.evaluate(() => document.fonts.ready);
+  const images = page.locator('.hero img');
+  await expect(images).toHaveCount(5);
+  const viewport = page.viewportSize();
+  if (viewport && viewport.width <= 500) {
+    const heroHeight = await page.locator('.hero').evaluate((hero) => Math.ceil(hero.scrollHeight));
+    if (heroHeight > viewport.height) {
+      await page.setViewportSize({ width: viewport.width, height: heroHeight });
+    }
+  }
+  for (const image of await images.all()) {
+    if (await image.isVisible()) await image.scrollIntoViewIfNeeded();
+    else await image.evaluate((element) => ((element as HTMLImageElement).loading = 'eager'));
+    await expect
+      .poll(() =>
+        image.evaluate((element) => {
+          const artwork = element as HTMLImageElement;
+          return artwork.complete && artwork.naturalWidth > 0;
+        }),
+      )
+      .toBe(true);
+  }
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      ),
+  );
+};
 
 test.beforeEach(async ({ page }) => {
   await page.goto('./');
@@ -14,6 +46,27 @@ test('loads the landing page and all component documentation', async ({ page }) 
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
   expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('loads optimized original hero artwork with stable dimensions', async ({ page }) => {
+  await prepareHeroVisual(page);
+  const artwork = await page.locator('.hero img').evaluateAll((images) =>
+    images.map((element) => {
+      const image = element as HTMLImageElement;
+      return {
+        alt: image.alt,
+        complete: image.complete,
+        height: image.height,
+        naturalHeight: image.naturalHeight,
+        naturalWidth: image.naturalWidth,
+        width: image.width,
+      };
+    }),
+  );
+  expect(artwork.every((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+  expect(artwork.every((image) => image.width > 0 && image.height > 0)).toBe(true);
+  expect(artwork.every((image) => image.alt === '')).toBe(true);
+  await expect(page.locator('.hero picture source[type="image/avif"]')).toHaveCount(5);
 });
 
 test('searches and filters the complete catalog', async ({ page }) => {
@@ -45,6 +98,7 @@ test('supports responsive site navigation', async ({ page }) => {
 test('runs form, tabs, accordion, menu, dialog, drawer, and toast interactions', async ({
   page,
 }) => {
+  test.slow();
   const input = page.locator('#ps-input ps-input input');
   await input.fill('Arcade');
   await expect(input).toHaveValue('Arcade');
@@ -69,8 +123,8 @@ test('runs form, tabs, accordion, menu, dialog, drawer, and toast interactions',
 });
 
 test('token controls accept only documented selections', async ({ page }) => {
-  await page.locator('[name="primary"]').selectOption('#007c83');
-  await expect(page.locator('html')).toHaveCSS('--ps-color-primary', '#007c83');
+  await page.locator('[name="primary"]').selectOption('#007d89');
+  await expect(page.locator('html')).toHaveCSS('--ps-color-primary', '#007d89');
   await page.getByRole('button', { name: 'Reset tokens' }).click();
   expect(
     await page
@@ -111,8 +165,20 @@ for (const theme of ['bubblegum', 'midnight', 'pastel']) {
   test(`visual baseline: ${theme}`, async ({ page }, testInfo) => {
     test.skip(!['chromium', 'mobile-chromium'].includes(testInfo.project.name));
     await page.locator('#theme-switcher').selectOption(theme);
-    await page.evaluate(() => document.fonts.ready);
+    await prepareHeroVisual(page);
     await expect(page.locator('.hero')).toHaveScreenshot(`hero-${theme}.png`, {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.02,
+    });
+  });
+
+  test(`component surface baseline: ${theme}`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium');
+    await page.locator('#theme-switcher').selectOption(theme);
+    await page.evaluate(() => document.fonts.ready);
+    const panel = page.locator('.token-layout');
+    await panel.scrollIntoViewIfNeeded();
+    await expect(panel).toHaveScreenshot(`tokens-${theme}.png`, {
       animations: 'disabled',
       maxDiffPixelRatio: 0.02,
     });

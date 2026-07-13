@@ -14,7 +14,11 @@ export class PsDialog extends LitElement {
         padding: 0;
         border: 2px solid var(--ps-color-border);
         border-radius: var(--ps-radius-lg);
-        background: var(--ps-color-surface);
+        background: linear-gradient(
+          145deg,
+          var(--ps-color-surface),
+          var(--ps-color-surface-raised)
+        );
         color: var(--ps-color-text);
         box-shadow: var(--ps-shadow-lg);
       }
@@ -29,7 +33,11 @@ export class PsDialog extends LitElement {
         gap: 1rem;
         padding: 1rem 1.25rem;
         border-bottom: 2px solid var(--ps-color-border);
-        background: var(--ps-color-surface-raised);
+        background: linear-gradient(
+          110deg,
+          var(--ps-color-surface-raised),
+          color-mix(in srgb, var(--ps-color-primary) 28%, var(--ps-color-surface-raised))
+        );
       }
       h2 {
         margin: 0;

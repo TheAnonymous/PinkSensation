@@ -90,6 +90,10 @@ for (const file of expectedFonts) {
 if ([...fileNames].some((file) => file.toLowerCase().includes('righteous'))) {
   throw new Error('Tarball unexpectedly contains the retired Righteous font.');
 }
+const showroomArtwork = ['pop-icon', 'electric-heart', 'midnight-drive'];
+if ([...fileNames].some((file) => showroomArtwork.some((name) => file.includes(name)))) {
+  throw new Error('Tarball unexpectedly contains showroom-only artwork.');
+}
 
 const manifest = JSON.parse(
   await readFile(resolve(root, 'packages/pink-sensation/custom-elements.json'), 'utf8'),

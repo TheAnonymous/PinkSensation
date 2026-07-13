@@ -18,8 +18,14 @@ export class PsNavbar extends LitElement {
         padding: 0.8rem 1rem;
         border: 2px solid var(--ps-color-border);
         border-radius: var(--ps-radius-lg);
-        background: var(--ps-color-surface);
-        box-shadow: var(--ps-shadow-md);
+        background: linear-gradient(
+          120deg,
+          var(--ps-color-surface),
+          color-mix(in srgb, var(--ps-color-surface-raised) 80%, var(--ps-color-primary))
+        );
+        box-shadow:
+          inset 0 2px 0 color-mix(in srgb, white 70%, transparent),
+          var(--ps-shadow-md);
       }
       .brand {
         font-family: var(--ps-font-display);

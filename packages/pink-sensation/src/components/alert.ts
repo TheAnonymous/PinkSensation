@@ -21,8 +21,14 @@ export class PsAlert extends LitElement {
         border: 2px solid var(--ps-color-border);
         border-left: 8px solid var(--ps-color-secondary);
         border-radius: var(--ps-radius-md);
-        background: var(--ps-color-surface);
-        box-shadow: var(--ps-shadow-md);
+        background: linear-gradient(
+          135deg,
+          var(--ps-color-surface),
+          color-mix(in srgb, var(--ps-color-surface-raised) 76%, var(--ps-color-secondary))
+        );
+        box-shadow:
+          inset 0 2px 0 color-mix(in srgb, white 66%, transparent),
+          var(--ps-shadow-md);
       }
       :host([variant='success']) .alert {
         border-left-color: var(--ps-color-success);

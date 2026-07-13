@@ -31,6 +31,8 @@ import 'pink-sensation/components/button';
 
 The theme self-hosts Shrikhand for its bubbly display hierarchy and Nunito Sans for readable body text and controls. Override `--ps-font-display` or `--ps-font-body` to supply your own type stack; no other font families ship in the package.
 
+Bubblegum leads with hot-pink pop gloss, Midnight shifts the same system into neon after dark, and Pastel keeps the chrome while softening the atmosphere. The live showroom uses original pop-portrait and mixtape artwork to demonstrate the direction; those images remain showcase-only and are not included in the npm package.
+
 The package is npm-ready but v0.1.0 is intentionally not published to npm. Run `npm run pack:verify` to produce and consumer-test `artifacts/pink-sensation-0.1.0.tgz`.
 
 ## Catalog

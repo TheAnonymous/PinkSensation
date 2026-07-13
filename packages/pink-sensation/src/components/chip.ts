@@ -19,7 +19,11 @@ export class PsChip extends LitElement {
         padding: 0.2rem 0.65rem;
         border: 2px solid var(--ps-color-border);
         border-radius: 99px;
-        background: var(--ps-color-surface-raised);
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--ps-color-surface-raised) 65%, white),
+          var(--ps-color-surface-raised)
+        );
         font-size: 0.875rem;
         font-weight: 800;
         box-shadow: var(--ps-shadow-sm);

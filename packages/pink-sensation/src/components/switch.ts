@@ -46,7 +46,11 @@ export class PsSwitch extends PsCheckbox {
         font-size: 0;
       }
       .box[data-checked] {
-        background: var(--ps-color-primary);
+        background: linear-gradient(
+          90deg,
+          var(--ps-color-primary),
+          color-mix(in srgb, var(--ps-color-primary) 58%, var(--ps-color-secondary))
+        );
       }
       .box[data-checked] .mark {
         transform: translateX(1.25rem);

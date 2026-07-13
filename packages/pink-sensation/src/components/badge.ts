@@ -19,7 +19,11 @@ export class PsBadge extends LitElement {
         padding: 0.15rem 0.55rem;
         border: 2px solid var(--ps-color-border);
         border-radius: 99px;
-        background: var(--ps-color-secondary);
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--ps-color-secondary) 68%, white),
+          var(--ps-color-secondary) 45%
+        );
         color: #fff;
         font-size: 0.75rem;
         font-weight: 900;
@@ -28,12 +32,15 @@ export class PsBadge extends LitElement {
       }
       :host([variant='success']) .badge {
         background: var(--ps-color-success);
+        color: var(--ps-color-bg);
       }
       :host([variant='warning']) .badge {
         background: var(--ps-color-warning);
+        color: var(--ps-color-bg);
       }
       :host([variant='danger']) .badge {
         background: var(--ps-color-danger);
+        color: var(--ps-color-bg);
       }
     `,
   ];

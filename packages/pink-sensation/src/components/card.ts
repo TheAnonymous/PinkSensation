@@ -15,8 +15,14 @@ export class PsCard extends LitElement {
         overflow: hidden;
         border: 2px solid var(--ps-color-border);
         border-radius: var(--ps-radius-lg);
-        background: var(--ps-color-surface);
-        box-shadow: var(--ps-shadow-lg);
+        background: linear-gradient(
+          145deg,
+          var(--ps-color-surface) 0 72%,
+          color-mix(in srgb, var(--ps-color-surface-raised) 82%, var(--ps-color-primary)) 100%
+        );
+        box-shadow:
+          inset 0 2px 0 color-mix(in srgb, white 72%, transparent),
+          var(--ps-shadow-lg);
       }
       .header,
       .body,
@@ -25,7 +31,11 @@ export class PsCard extends LitElement {
       }
       .header {
         border-bottom: 2px solid var(--ps-color-border);
-        background: var(--ps-color-surface-raised);
+        background: linear-gradient(
+          110deg,
+          var(--ps-color-surface-raised),
+          color-mix(in srgb, var(--ps-color-surface-raised) 66%, var(--ps-color-primary))
+        );
         font-family: var(--ps-font-display);
         font-size: 1.25rem;
       }

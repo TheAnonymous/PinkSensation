@@ -15,7 +15,12 @@ export class PsTabPanel extends LitElement {
         padding: 1rem;
         border: 2px solid var(--ps-color-border);
         border-radius: 0 var(--ps-radius-md) var(--ps-radius-md);
-        background: var(--ps-color-surface);
+        background: linear-gradient(
+          145deg,
+          var(--ps-color-surface),
+          var(--ps-color-surface-raised)
+        );
+        box-shadow: var(--ps-shadow-sm);
       }
       :host(:not([active])) {
         display: none;

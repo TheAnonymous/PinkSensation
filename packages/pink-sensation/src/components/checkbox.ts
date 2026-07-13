@@ -26,7 +26,11 @@ export class PsCheckbox extends PsFormControl {
         height: 1.35rem;
         border: 2px solid var(--ps-color-border);
         border-radius: 0.35rem;
-        background: var(--ps-color-surface);
+        background: linear-gradient(
+          180deg,
+          var(--ps-color-surface),
+          var(--ps-color-surface-raised)
+        );
         box-shadow: var(--ps-shadow-sm);
       }
       input {

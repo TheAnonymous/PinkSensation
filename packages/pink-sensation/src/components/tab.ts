@@ -21,8 +21,13 @@ export class PsTab extends LitElement {
       :host([active]) {
         border-color: var(--ps-color-border);
         border-bottom-color: var(--ps-color-surface);
-        background: var(--ps-color-surface);
+        background: linear-gradient(
+          180deg,
+          var(--ps-color-surface-raised),
+          var(--ps-color-surface)
+        );
         color: var(--ps-color-primary);
+        box-shadow: inset 0 2px 0 color-mix(in srgb, white 65%, transparent);
       }
       .tab {
         display: block;

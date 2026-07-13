@@ -1,6 +1,12 @@
 import 'pink-sensation/theme.css';
 import 'pink-sensation';
 import type { PsDialog, PsDrawer, PsInput, PsToastStack, ThemeName } from 'pink-sensation';
+import electricHeartAvif from './assets/electric-heart.avif';
+import electricHeartWebp from './assets/electric-heart.webp';
+import midnightDriveAvif from './assets/midnight-drive.avif';
+import midnightDriveWebp from './assets/midnight-drive.webp';
+import popIconAvif from './assets/pop-icon.avif';
+import popIconWebp from './assets/pop-icon.webp';
 import { catalog, categories, type DocRow } from './catalog.js';
 import './styles.css';
 
@@ -56,15 +62,42 @@ app.innerHTML = `
 
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
-      <div class="sparkle sparkle-one">✦</div><div class="sparkle sparkle-two">✧</div>
-      <p class="kicker">Web Components · v0.1.0</p>
-      <h1 id="hero-title"><span>Pink</span><span>Sensation</span></h1>
-      <p class="hero-copy">Accessible components for interfaces that deserve more gloss, more joy, and a little more mall after dark.</p>
-      <div class="hero-actions"><ps-button size="lg" data-scroll-catalog>See the collection <span slot="suffix">→</span></ps-button><ps-button size="lg" variant="outline" data-copy="npm install pink-sensation">npm install</ps-button></div>
-      <div class="hero-stickers" aria-label="Toolkit qualities">
-        <ps-card class="sticker sticker-one"><span slot="header">39 elements</span>Small enough to know. Complete enough to ship.</ps-card>
-        <ps-card class="sticker sticker-two"><span slot="header">Zero framework lock-in</span>Standards, slots, parts, and ESM.</ps-card>
-        <ps-card class="sticker sticker-three"><span slot="header">AA-minded</span>Keyboard complete and focus forward.</ps-card>
+      <div class="sparkle sparkle-one">✦</div><div class="sparkle sparkle-two">✧</div><div class="hero-squiggle" aria-hidden="true">⌁</div>
+      <div class="hero-board">
+        <div class="hero-brand-panel">
+          <p class="kicker">Web Components · v0.1.0</p>
+          <h1 id="hero-title"><span>Pink</span><span>Sensation</span></h1>
+          <p class="hero-copy">Accessible components for interfaces that deserve more gloss, more joy, and a little more mall after dark.</p>
+          <div class="hero-actions"><ps-button size="lg" data-scroll-catalog>See the collection <span slot="suffix">→</span></ps-button><ps-button size="lg" variant="outline" data-copy="npm install pink-sensation">npm install</ps-button></div>
+          <div class="cover-strip" aria-label="Original Pink Sensation artwork">
+            <picture><source type="image/avif" srcset="${electricHeartAvif}"><img src="${electricHeartWebp}" width="768" height="768" alt="" loading="lazy" decoding="async"></picture>
+            <picture><source type="image/avif" srcset="${midnightDriveAvif}"><img src="${midnightDriveWebp}" width="768" height="768" alt="" loading="lazy" decoding="async"></picture>
+            <p><strong>Original artwork</strong><span>Chrome, cassette tape, and midnight neon.</span></p>
+          </div>
+        </div>
+
+        <section class="hero-dashboard-panel" aria-label="Toolkit highlights">
+          <header class="dashboard-panel-header"><div><span class="status-dot"></span><strong>Toolkit status</strong></div><ps-badge variant="success">Ready to glow</ps-badge></header>
+          <div class="hero-metrics">
+            <ps-card class="metric-card"><span slot="header">Elements <span aria-hidden="true">✦</span></span><strong>39</strong><small>One complete collection</small></ps-card>
+            <ps-card class="metric-card"><span slot="header">Themes <span aria-hidden="true">◉</span></span><strong>03</strong><small>One expressive system</small></ps-card>
+            <ps-card class="metric-card"><span slot="header">Type safety <span aria-hidden="true">⌁</span></span><strong>100%</strong><small>Typed ESM and manifests</small></ps-card>
+            <ps-card class="metric-card"><span slot="header">Focus <span aria-hidden="true">⚡</span></span><strong>AA</strong><small>Keyboard complete</small></ps-card>
+          </div>
+          <div class="hero-activity">
+            <div class="activity-heading"><div><span class="eyebrow">Fresh from the mall</span><h2>Recently polished</h2></div><span>Live components</span></div>
+            <article><picture><source type="image/avif" srcset="${electricHeartAvif}"><img src="${electricHeartWebp}" width="768" height="768" alt="" loading="lazy" decoding="async"></picture><div><strong>Glossy actions</strong><span>Buttons · icon buttons · groups</span></div><ps-badge>Hot</ps-badge></article>
+            <article><picture><source type="image/avif" srcset="${midnightDriveAvif}"><img src="${midnightDriveWebp}" width="768" height="768" alt="" loading="lazy" decoding="async"></picture><div><strong>Midnight navigation</strong><span>Tabs · menus · breadcrumbs</span></div><ps-badge>New</ps-badge></article>
+          </div>
+        </section>
+
+        <article class="now-playing">
+          <div class="player-art"><picture><source type="image/avif" srcset="${popIconAvif}"><img src="${popIconWebp}" width="960" height="1200" alt="" fetchpriority="high" decoding="async"></picture><span class="player-kicker">Now playing</span><span class="player-menu" aria-hidden="true">⋮</span></div>
+          <div class="player-copy"><span>Neon Dreams</span><strong>Jessie Stardust</strong></div>
+          <ps-progress value="68" aria-label="Showcase progress"></ps-progress>
+          <div class="player-time"><span>2:41</span><span>3:52</span></div>
+          <div class="player-controls" aria-hidden="true"><span>↝</span><span>◀</span><b>▶</b><span>▶</span><span>♡</span></div>
+        </article>
       </div>
     </section>
 
@@ -89,7 +122,7 @@ document.body.dataset.psTheme = 'bubblegum';</code></pre><button type="button" d
       <div class="section-heading"><div><span class="eyebrow">Safe knobs only</span><h2 id="tokens-title">Token playground</h2><p>Choose documented values; this playground never evaluates pasted markup or CSS.</p></div></div>
       <div class="token-layout">
         <form class="token-controls" id="token-form">
-          <label>Primary color<select name="primary"><option value="#c41468">Hot pink</option><option value="#7a36c9">Electric violet</option><option value="#007c83">Pool teal</option></select></label>
+          <label>Primary color<select name="primary"><option value="#f20a86">Hot pink</option><option value="#7929d6">Electric violet</option><option value="#007d89">Pool teal</option></select></label>
           <label>Corner style<select name="radius"><option value="0.9rem">Soft</option><option value="0.5rem">Compact</option><option value="1.5rem">Bubble</option></select></label>
           <label>Chunky shadow<select name="shadow"><option value="0 6px 0 var(--ps-color-border)">Classic</option><option value="0 3px 0 var(--ps-color-border)">Subtle</option><option value="0 10px 0 var(--ps-color-border)">Extra</option></select></label>
           <ps-button type="button" variant="outline" id="reset-tokens">Reset tokens</ps-button>

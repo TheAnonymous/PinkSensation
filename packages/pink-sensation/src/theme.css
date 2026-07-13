@@ -17,32 +17,33 @@
 :root,
 [data-ps-theme='bubblegum'] {
   color-scheme: light;
-  --ps-color-bg: #fff7fc;
-  --ps-color-surface: #ffffff;
-  --ps-color-surface-raised: #fff0f9;
-  --ps-color-text: #29102d;
-  --ps-color-muted: #695169;
-  --ps-color-primary: #c41468;
-  --ps-color-primary-contrast: #ffffff;
-  --ps-color-secondary: #3c2cb9;
-  --ps-color-accent: #007c83;
-  --ps-color-border: #3a153d;
+  --ps-color-bg: #fff0f8;
+  --ps-color-surface: #fff9fd;
+  --ps-color-surface-raised: #ffd5ea;
+  --ps-color-text: #25061f;
+  --ps-color-muted: #70415f;
+  --ps-color-primary: #f20a86;
+  --ps-color-primary-contrast: #25061f;
+  --ps-color-secondary: #7929d6;
+  --ps-color-accent: #009ec4;
+  --ps-color-border: #480d45;
   --ps-color-success: #08714d;
   --ps-color-warning: #8a4d00;
   --ps-color-danger: #b20f3c;
-  --ps-color-focus: #006b73;
+  --ps-color-focus: #007d89;
   --ps-gradient-chrome: linear-gradient(
     180deg,
     #ffffff 0%,
-    #ffd6ef 25%,
-    #c8c8ee 49%,
-    #ffffff 52%,
-    #8f84db 76%,
+    #ffd1ea 18%,
+    #ff77bc 38%,
+    #ffffff 50%,
+    #8f7bff 64%,
+    #27d2ee 82%,
     #ffffff 100%
   );
-  --ps-shadow-sm: 0 3px 0 rgb(58 21 61 / 20%);
-  --ps-shadow-md: 0 6px 0 #3a153d;
-  --ps-shadow-lg: 0 10px 0 #3a153d, 0 18px 38px rgb(70 20 75 / 20%);
+  --ps-shadow-sm: 0 4px 0 rgb(72 13 69 / 24%);
+  --ps-shadow-md: 0 7px 0 #480d45, 0 12px 24px rgb(112 9 85 / 18%);
+  --ps-shadow-lg: 0 11px 0 #480d45, 0 24px 52px rgb(112 9 85 / 26%);
   --ps-radius-sm: 0.5rem;
   --ps-radius-md: 0.9rem;
   --ps-radius-lg: 1.5rem;
@@ -60,44 +61,64 @@
 
 [data-ps-theme='midnight'] {
   color-scheme: dark;
-  --ps-color-bg: #120d2a;
-  --ps-color-surface: #211747;
-  --ps-color-surface-raised: #30205e;
-  --ps-color-text: #fff8ff;
-  --ps-color-muted: #d0bdd8;
-  --ps-color-primary: #ff5caa;
-  --ps-color-primary-contrast: #20051a;
-  --ps-color-secondary: #a9a2ff;
-  --ps-color-accent: #6ee7df;
-  --ps-color-border: #f5c9ff;
+  --ps-color-bg: #0e0620;
+  --ps-color-surface: #1d0c3b;
+  --ps-color-surface-raised: #37115b;
+  --ps-color-text: #fff6fc;
+  --ps-color-muted: #d8bcd5;
+  --ps-color-primary: #ff4fac;
+  --ps-color-primary-contrast: #23041a;
+  --ps-color-secondary: #7d46dd;
+  --ps-color-accent: #1bd6f2;
+  --ps-color-border: #ffc2ee;
   --ps-color-success: #65e2af;
   --ps-color-warning: #ffc369;
   --ps-color-danger: #ff7896;
-  --ps-color-focus: #84f7ed;
-  --ps-shadow-sm: 0 3px 0 rgb(0 0 0 / 35%);
-  --ps-shadow-md: 0 6px 0 #080516;
-  --ps-shadow-lg: 0 10px 0 #080516, 0 18px 42px rgb(0 0 0 / 42%);
+  --ps-color-focus: #53f3ff;
+  --ps-gradient-chrome: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #ffbae0 20%,
+    #d8c9ff 41%,
+    #ffffff 51%,
+    #8c8dff 68%,
+    #8ef5ff 84%,
+    #ffffff 100%
+  );
+  --ps-shadow-sm: 0 4px 0 rgb(0 0 0 / 42%);
+  --ps-shadow-md: 0 7px 0 #05010d, 0 13px 28px rgb(0 0 0 / 38%);
+  --ps-shadow-lg: 0 11px 0 #05010d, 0 26px 56px rgb(0 0 0 / 58%);
 }
 
 [data-ps-theme='pastel'] {
   color-scheme: light;
-  --ps-color-bg: #fffdf5;
-  --ps-color-surface: #ffffff;
-  --ps-color-surface-raised: #f1f4ff;
-  --ps-color-text: #342942;
-  --ps-color-muted: #655b70;
-  --ps-color-primary: #b94478;
+  --ps-color-bg: #fff8f2;
+  --ps-color-surface: #fffdfb;
+  --ps-color-surface-raised: #f6dff2;
+  --ps-color-text: #34223e;
+  --ps-color-muted: #6d5a73;
+  --ps-color-primary: #c63178;
   --ps-color-primary-contrast: #ffffff;
-  --ps-color-secondary: #655bb0;
-  --ps-color-accent: #35756f;
-  --ps-color-border: #51425f;
+  --ps-color-secondary: #6956c6;
+  --ps-color-accent: #168a97;
+  --ps-color-border: #51365a;
   --ps-color-success: #34745a;
   --ps-color-warning: #8b5b16;
   --ps-color-danger: #a73d5a;
-  --ps-color-focus: #245f67;
-  --ps-shadow-sm: 0 3px 0 rgb(81 66 95 / 16%);
-  --ps-shadow-md: 0 6px 0 #51425f;
-  --ps-shadow-lg: 0 10px 0 #51425f, 0 18px 38px rgb(81 66 95 / 18%);
+  --ps-color-focus: #087b88;
+  --ps-gradient-chrome: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #ffd9ec 21%,
+    #d8d4f8 43%,
+    #ffffff 52%,
+    #a9a0e8 72%,
+    #b5eef2 86%,
+    #ffffff 100%
+  );
+  --ps-shadow-sm: 0 4px 0 rgb(81 54 90 / 19%);
+  --ps-shadow-md: 0 7px 0 #51365a, 0 12px 24px rgb(105 86 198 / 14%);
+  --ps-shadow-lg: 0 11px 0 #51365a, 0 24px 50px rgb(105 86 198 / 20%);
 }
 
 html {

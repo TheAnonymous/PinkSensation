@@ -17,10 +17,17 @@ export class PsProgress extends LitElement {
         border: 2px solid var(--ps-color-border);
         border-radius: 99px;
         background: var(--ps-color-surface-raised);
+        box-shadow: inset 0 2px 4px color-mix(in srgb, var(--ps-color-border) 24%, transparent);
       }
       .indicator {
         height: 100%;
-        background: linear-gradient(90deg, var(--ps-color-primary), var(--ps-color-secondary));
+        background: linear-gradient(
+          90deg,
+          var(--ps-color-primary),
+          var(--ps-color-secondary),
+          var(--ps-color-accent)
+        );
+        box-shadow: inset 0 2px 0 color-mix(in srgb, white 55%, transparent);
         transition: width var(--ps-duration-normal);
       }
       :host([indeterminate]) .indicator {

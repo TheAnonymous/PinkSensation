@@ -61,9 +61,15 @@ export const controlStyles = css`
     min-height: 2.75rem;
     padding: 0.65rem 0.85rem;
     border: 2px solid var(--ps-color-border);
-    border-radius: var(--ps-radius-sm);
-    background: var(--ps-color-surface);
-    box-shadow: var(--ps-shadow-sm);
+    border-radius: var(--ps-radius-md);
+    background: linear-gradient(
+      180deg,
+      var(--ps-color-surface) 0 72%,
+      color-mix(in srgb, var(--ps-color-surface-raised) 72%, var(--ps-color-primary)) 100%
+    );
+    box-shadow:
+      inset 0 2px 0 color-mix(in srgb, white 82%, transparent),
+      var(--ps-shadow-sm);
     transition:
       border-color var(--ps-duration-fast),
       box-shadow var(--ps-duration-fast);
@@ -71,6 +77,9 @@ export const controlStyles = css`
 
   .control:hover:not(:disabled) {
     border-color: var(--ps-color-primary);
+    box-shadow:
+      inset 0 2px 0 color-mix(in srgb, white 88%, transparent),
+      0 4px 0 color-mix(in srgb, var(--ps-color-primary) 40%, transparent);
   }
 
   :host([size='sm']) .control {

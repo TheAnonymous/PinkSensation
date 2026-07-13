@@ -13,6 +13,8 @@ export class PsIconButton extends PsButton {
         display: inline-block;
       }
       button {
+        position: relative;
+        overflow: hidden;
         display: grid;
         place-items: center;
         width: 2.75rem;
@@ -34,11 +36,20 @@ export class PsIconButton extends PsButton {
         box-shadow: var(--ps-shadow-sm);
       }
       :host([variant='secondary']) button {
-        background: var(--ps-color-secondary);
+        background: linear-gradient(
+          180deg,
+          color-mix(in srgb, var(--ps-color-secondary) 68%, white),
+          var(--ps-color-secondary) 40% 76%,
+          color-mix(in srgb, var(--ps-color-secondary) 72%, var(--ps-color-border))
+        );
         color: #fff;
       }
       :host([variant='outline']) button {
-        background: var(--ps-color-surface);
+        background: linear-gradient(
+          180deg,
+          var(--ps-color-surface),
+          var(--ps-color-surface-raised)
+        );
         color: var(--ps-color-primary);
       }
       :host([variant='ghost']) button {

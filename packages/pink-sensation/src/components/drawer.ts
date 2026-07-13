@@ -33,7 +33,11 @@ export class PsDrawer extends LitElement {
         grid-template-rows: auto 1fr auto;
         width: min(26rem, 90vw);
         border-left: 2px solid var(--ps-color-border);
-        background: var(--ps-color-surface);
+        background: linear-gradient(
+          145deg,
+          var(--ps-color-surface),
+          var(--ps-color-surface-raised)
+        );
         box-shadow: var(--ps-shadow-lg);
         transform: translateX(102%);
         transition: transform var(--ps-duration-normal);
@@ -63,7 +67,11 @@ export class PsDrawer extends LitElement {
         gap: 1rem;
         padding: 1rem;
         border-bottom: 2px solid var(--ps-color-border);
-        background: var(--ps-color-surface-raised);
+        background: linear-gradient(
+          110deg,
+          var(--ps-color-surface-raised),
+          color-mix(in srgb, var(--ps-color-primary) 28%, var(--ps-color-surface-raised))
+        );
       }
       footer {
         border-top: 2px solid var(--ps-color-border);

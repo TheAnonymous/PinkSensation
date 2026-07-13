@@ -30,7 +30,11 @@ export class PsRadio extends LitElement {
         height: 1.35rem;
         border: 2px solid var(--ps-color-border);
         border-radius: 50%;
-        background: var(--ps-color-surface);
+        background: linear-gradient(
+          180deg,
+          var(--ps-color-surface),
+          var(--ps-color-surface-raised)
+        );
         box-shadow: var(--ps-shadow-sm);
       }
       .dot::after {
