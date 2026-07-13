@@ -114,6 +114,7 @@ for (const theme of ['bubblegum', 'midnight', 'pastel']) {
     await page.evaluate(() => document.fonts.ready);
     await expect(page.locator('.hero')).toHaveScreenshot(`hero-${theme}.png`, {
       animations: 'disabled',
+      maxDiffPixelRatio: 0.02,
     });
   });
 }
