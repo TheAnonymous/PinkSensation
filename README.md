@@ -29,6 +29,8 @@ Individual elements self-register too:
 import 'pink-sensation/components/button';
 ```
 
+The theme self-hosts Shrikhand for its bubbly display hierarchy and Nunito Sans for readable body text and controls. Override `--ps-font-display` or `--ps-font-body` to supply your own type stack; no other font families ship in the package.
+
 The package is npm-ready but v0.1.0 is intentionally not published to npm. Run `npm run pack:verify` to produce and consumer-test `artifacts/pink-sensation-0.1.0.tgz`.
 
 ## Catalog

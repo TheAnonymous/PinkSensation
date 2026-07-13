@@ -1,6 +1,6 @@
 @font-face {
-  font-family: 'Righteous';
-  src: url('./fonts/righteous-latin-400-normal.woff2') format('woff2');
+  font-family: 'Shrikhand';
+  src: url('./fonts/shrikhand-latin-400-normal.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -47,7 +47,7 @@
   --ps-radius-md: 0.9rem;
   --ps-radius-lg: 1.5rem;
   --ps-font-body: 'Nunito Sans', ui-rounded, 'Arial Rounded MT Bold', system-ui, sans-serif;
-  --ps-font-display: 'Righteous', 'Arial Black', Impact, sans-serif;
+  --ps-font-display: 'Shrikhand', ui-rounded, 'Arial Rounded MT Bold', cursive;
   --ps-duration-fast: 140ms;
   --ps-duration-normal: 240ms;
   --ps-space-1: 0.25rem;

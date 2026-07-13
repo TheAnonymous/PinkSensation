@@ -27,6 +27,8 @@ import 'pink-sensation/components/button';
 
 The default theme is `bubblegum`. Set `data-ps-theme` on any ancestor to `bubblegum`, `midnight`, or `pastel`. All components use open Shadow DOM, expose the documented `::part()` hooks, and inherit public `--ps-*` custom properties.
 
+Shrikhand is self-hosted as the default for `--ps-font-display`; Nunito Sans remains the self-hosted `--ps-font-body` default for body copy and controls. Override either public token to use a custom type stack. No other font families ship in the package.
+
 Form controls use `ElementInternals`, so `name`, `value`, `disabled`, `required`, form reset, validation, and form submission behave like native controls. Sizes are `sm`, `md`, and `lg`; unknown sizes fall back to `md`.
 
 See the full component catalog and interactive examples at <https://theanonymous.github.io/PinkSensation/>.

@@ -61,7 +61,9 @@ const required = [
   'dist/theme.css.d.ts',
   'dist/components/button.js',
   'dist/components/button.d.ts',
-  'dist/fonts/righteous-latin-400-normal.woff2',
+  'dist/fonts/OFL-Shrikhand.txt',
+  'dist/fonts/OFL-Nunito-Sans.txt',
+  'dist/fonts/shrikhand-latin-400-normal.woff2',
   'dist/fonts/nunito-sans-latin-wght-normal.woff2',
 ];
 for (const file of required)
@@ -70,6 +72,23 @@ for (const file of fileNames) {
   if (file.startsWith('src/') || file.startsWith('test/')) {
     throw new Error(`Tarball unexpectedly contains ${file}.`);
   }
+}
+
+const expectedFonts = new Set([
+  'dist/fonts/OFL-Shrikhand.txt',
+  'dist/fonts/OFL-Nunito-Sans.txt',
+  'dist/fonts/shrikhand-latin-400-normal.woff2',
+  'dist/fonts/nunito-sans-latin-wght-normal.woff2',
+]);
+const packedFonts = [...fileNames].filter((file) => file.startsWith('dist/fonts/'));
+for (const file of packedFonts) {
+  if (!expectedFonts.has(file)) throw new Error(`Tarball unexpectedly contains font file ${file}.`);
+}
+for (const file of expectedFonts) {
+  if (!fileNames.has(file)) throw new Error(`Tarball is missing font file ${file}.`);
+}
+if ([...fileNames].some((file) => file.toLowerCase().includes('righteous'))) {
+  throw new Error('Tarball unexpectedly contains the retired Righteous font.');
 }
 
 const manifest = JSON.parse(

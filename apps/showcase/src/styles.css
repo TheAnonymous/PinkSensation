@@ -157,11 +157,10 @@ main {
   z-index: 1;
   margin: 0;
   font-family: var(--ps-font-display);
-  font-size: clamp(5rem, 15vw, 12rem);
+  font-size: clamp(5.25rem, 14vw, 11rem);
   font-weight: 400;
-  line-height: 0.72;
-  letter-spacing: -0.04em;
-  text-transform: uppercase;
+  line-height: 1;
+  letter-spacing: -0.025em;
   transform: rotate(-2deg);
 }
 .hero h1 span {
@@ -169,13 +168,13 @@ main {
   background: var(--ps-gradient-chrome);
   background-clip: text;
   color: transparent;
-  -webkit-text-stroke: clamp(2px, 0.4vw, 5px) var(--ps-color-border);
+  -webkit-text-stroke: clamp(1.5px, 0.3vw, 4px) var(--ps-color-border);
   filter: drop-shadow(0 0.08em 0 var(--ps-color-primary))
     drop-shadow(0 0.14em 0 var(--ps-color-border));
 }
 .hero h1 span:last-child {
-  font-size: 0.56em;
-  letter-spacing: 0.02em;
+  font-size: 0.58em;
+  letter-spacing: 0.01em;
   transform: rotate(1deg);
 }
 .hero-copy {
@@ -654,7 +653,16 @@ footer {
     padding-top: 4rem;
   }
   .hero h1 {
-    font-size: clamp(4rem, 22vw, 7rem);
+    font-size: clamp(4.25rem, 20vw, 6.5rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+  }
+  .hero h1 span {
+    -webkit-text-stroke-width: clamp(1.5px, 0.65vw, 3px);
+  }
+  .hero h1 span:last-child {
+    font-size: 0.57em;
+    letter-spacing: 0.015em;
   }
   .hero-stickers {
     margin-top: 3rem;
