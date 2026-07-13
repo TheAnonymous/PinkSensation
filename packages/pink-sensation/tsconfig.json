@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node", "vitest/globals", "@vitest/browser/matchers"]
+  },
+  "include": ["src", "test", "vite.config.ts"]
+}

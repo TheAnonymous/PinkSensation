@@ -1,0 +1,55 @@
+{
+  "name": "pink-sensation",
+  "version": "0.1.0",
+  "description": "Glossy, accessible 80s mall-pop Web Components.",
+  "type": "module",
+  "license": "MIT",
+  "author": "TheAnonymous",
+  "sideEffects": true,
+  "files": [
+    "dist",
+    "custom-elements.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "customElements": "custom-elements.json",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./components/*": {
+      "types": "./dist/components/*.d.ts",
+      "import": "./dist/components/*.js"
+    },
+    "./theme.css": {
+      "types": "./dist/theme.css.d.ts",
+      "default": "./dist/theme.css"
+    },
+    "./custom-elements.json": "./custom-elements.json",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "build": "vite build && tsc -p tsconfig.build.json && node scripts/copy-assets.mjs",
+    "manifest": "cem analyze --config custom-elements-manifest.config.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --browser"
+  },
+  "dependencies": {
+    "lit": "^3.3.3"
+  },
+  "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.11.0",
+    "@fontsource-variable/nunito-sans": "^5.2.7",
+    "@fontsource/righteous": "^5.2.7",
+    "@vitest/browser-playwright": "^4.1.10",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10"
+  }
+}

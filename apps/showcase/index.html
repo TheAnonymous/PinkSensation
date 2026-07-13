@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en" data-ps-theme="bubblegum">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#d91777" />
+    <meta
+      name="description"
+      content="Pink Sensation — glossy, accessible 80s mall-pop Web Components."
+    />
+    <title>Pink Sensation · Web Components with sparkle</title>
+    <script>
+      try {
+        document.documentElement.dataset.psTheme = localStorage.getItem('ps-theme') || 'bubblegum';
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

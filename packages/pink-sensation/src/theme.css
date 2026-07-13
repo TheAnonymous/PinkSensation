@@ -1,0 +1,120 @@
+@font-face {
+  font-family: 'Righteous';
+  src: url('./fonts/righteous-latin-400-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Nunito Sans';
+  src: url('./fonts/nunito-sans-latin-wght-normal.woff2') format('woff2-variations');
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+}
+
+:root,
+[data-ps-theme='bubblegum'] {
+  color-scheme: light;
+  --ps-color-bg: #fff7fc;
+  --ps-color-surface: #ffffff;
+  --ps-color-surface-raised: #fff0f9;
+  --ps-color-text: #29102d;
+  --ps-color-muted: #695169;
+  --ps-color-primary: #c41468;
+  --ps-color-primary-contrast: #ffffff;
+  --ps-color-secondary: #3c2cb9;
+  --ps-color-accent: #007c83;
+  --ps-color-border: #3a153d;
+  --ps-color-success: #08714d;
+  --ps-color-warning: #8a4d00;
+  --ps-color-danger: #b20f3c;
+  --ps-color-focus: #006b73;
+  --ps-gradient-chrome: linear-gradient(
+    180deg,
+    #ffffff 0%,
+    #ffd6ef 25%,
+    #c8c8ee 49%,
+    #ffffff 52%,
+    #8f84db 76%,
+    #ffffff 100%
+  );
+  --ps-shadow-sm: 0 3px 0 rgb(58 21 61 / 20%);
+  --ps-shadow-md: 0 6px 0 #3a153d;
+  --ps-shadow-lg: 0 10px 0 #3a153d, 0 18px 38px rgb(70 20 75 / 20%);
+  --ps-radius-sm: 0.5rem;
+  --ps-radius-md: 0.9rem;
+  --ps-radius-lg: 1.5rem;
+  --ps-font-body: 'Nunito Sans', ui-rounded, 'Arial Rounded MT Bold', system-ui, sans-serif;
+  --ps-font-display: 'Righteous', 'Arial Black', Impact, sans-serif;
+  --ps-duration-fast: 140ms;
+  --ps-duration-normal: 240ms;
+  --ps-space-1: 0.25rem;
+  --ps-space-2: 0.5rem;
+  --ps-space-3: 0.75rem;
+  --ps-space-4: 1rem;
+  --ps-space-5: 1.5rem;
+  --ps-space-6: 2rem;
+}
+
+[data-ps-theme='midnight'] {
+  color-scheme: dark;
+  --ps-color-bg: #120d2a;
+  --ps-color-surface: #211747;
+  --ps-color-surface-raised: #30205e;
+  --ps-color-text: #fff8ff;
+  --ps-color-muted: #d0bdd8;
+  --ps-color-primary: #ff5caa;
+  --ps-color-primary-contrast: #20051a;
+  --ps-color-secondary: #a9a2ff;
+  --ps-color-accent: #6ee7df;
+  --ps-color-border: #f5c9ff;
+  --ps-color-success: #65e2af;
+  --ps-color-warning: #ffc369;
+  --ps-color-danger: #ff7896;
+  --ps-color-focus: #84f7ed;
+  --ps-shadow-sm: 0 3px 0 rgb(0 0 0 / 35%);
+  --ps-shadow-md: 0 6px 0 #080516;
+  --ps-shadow-lg: 0 10px 0 #080516, 0 18px 42px rgb(0 0 0 / 42%);
+}
+
+[data-ps-theme='pastel'] {
+  color-scheme: light;
+  --ps-color-bg: #fffdf5;
+  --ps-color-surface: #ffffff;
+  --ps-color-surface-raised: #f1f4ff;
+  --ps-color-text: #342942;
+  --ps-color-muted: #655b70;
+  --ps-color-primary: #b94478;
+  --ps-color-primary-contrast: #ffffff;
+  --ps-color-secondary: #655bb0;
+  --ps-color-accent: #35756f;
+  --ps-color-border: #51425f;
+  --ps-color-success: #34745a;
+  --ps-color-warning: #8b5b16;
+  --ps-color-danger: #a73d5a;
+  --ps-color-focus: #245f67;
+  --ps-shadow-sm: 0 3px 0 rgb(81 66 95 / 16%);
+  --ps-shadow-md: 0 6px 0 #51425f;
+  --ps-shadow-lg: 0 10px 0 #51425f, 0 18px 38px rgb(81 66 95 / 18%);
+}
+
+html {
+  color: var(--ps-color-text);
+  background: var(--ps-color-bg);
+  font-family: var(--ps-font-body);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ps-duration-fast: 0ms;
+    --ps-duration-normal: 0ms;
+  }
+}

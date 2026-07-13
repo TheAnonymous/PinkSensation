@@ -1,0 +1,41 @@
+{
+  "name": "pink-sensation-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A glossy, accessible Web Components toolkit and showroom.",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "packageManager": "npm@11.16.0",
+  "scripts": {
+    "build": "npm run build:library && npm run build:showcase",
+    "build:library": "npm run build -w pink-sensation",
+    "build:showcase": "npm run build -w @pink-sensation/showcase",
+    "dev": "npm run dev -w @pink-sensation/showcase",
+    "format": "prettier --check .",
+    "format:write": "prettier --write .",
+    "lint": "eslint .",
+    "manifest": "npm run manifest -w pink-sensation",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test:browser": "npm run test -w pink-sensation",
+    "test:e2e": "npm run test -w @pink-sensation/showcase",
+    "test:e2e:update": "npm run test:update -w @pink-sensation/showcase",
+    "test": "npm run test:browser && npm run test:e2e",
+    "pack:verify": "node scripts/verify-package.mjs",
+    "verify": "npm run format && npm run lint && npm run typecheck && npm run build:library && npm run manifest && npm run build:showcase && npm run test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.10.4",
+    "eslint": "^10.7.0",
+    "globals": "^17.3.0",
+    "prettier": "^3.9.5",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.64.0"
+  }
+}

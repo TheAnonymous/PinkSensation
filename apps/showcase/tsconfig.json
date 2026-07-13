@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["node", "@playwright/test"],
+    "noEmit": true,
+    "paths": {
+      "pink-sensation": ["../../packages/pink-sensation/src/index.ts"],
+      "pink-sensation/*": ["../../packages/pink-sensation/src/*"]
+    }
+  },
+  "include": ["src", "tests", "vite.config.ts", "playwright.config.ts"]
+}
