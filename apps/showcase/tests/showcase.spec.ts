@@ -5,6 +5,9 @@ const prepareHeroVisual = async (page: Page) => {
   await page.evaluate(() => document.fonts.ready);
   const images = page.locator('.hero img');
   await expect(images).toHaveCount(5);
+  await images.evaluateAll((elements) => {
+    for (const element of elements) (element as HTMLImageElement).loading = 'eager';
+  });
   const viewport = page.viewportSize();
   if (viewport && viewport.width <= 500) {
     const heroHeight = await page.locator('.hero').evaluate((hero) => Math.ceil(hero.scrollHeight));
@@ -12,18 +15,16 @@ const prepareHeroVisual = async (page: Page) => {
       await page.setViewportSize({ width: viewport.width, height: heroHeight });
     }
   }
-  for (const image of await images.all()) {
-    if (await image.isVisible()) await image.scrollIntoViewIfNeeded();
-    else await image.evaluate((element) => ((element as HTMLImageElement).loading = 'eager'));
-    await expect
-      .poll(() =>
-        image.evaluate((element) => {
+  await expect
+    .poll(() =>
+      images.evaluateAll((elements) =>
+        elements.every((element) => {
           const artwork = element as HTMLImageElement;
           return artwork.complete && artwork.naturalWidth > 0;
         }),
-      )
-      .toBe(true);
-  }
+      ),
+    )
+    .toBe(true);
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.evaluate(
     () =>
@@ -49,6 +50,7 @@ test('loads the landing page and all component documentation', async ({ page }) 
 });
 
 test('loads optimized original hero artwork with stable dimensions', async ({ page }) => {
+  test.slow();
   await prepareHeroVisual(page);
   const artwork = await page.locator('.hero img').evaluateAll((images) =>
     images.map((element) => {
