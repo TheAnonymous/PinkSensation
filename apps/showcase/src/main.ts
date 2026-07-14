@@ -3,22 +3,42 @@ import 'pink-sensation';
 import type { PsDialog, PsDrawer, PsInput, PsToastStack, ThemeName } from 'pink-sensation';
 import afterHoursMallAvif from './assets/after-hours-mall.avif';
 import afterHoursMallWebp from './assets/after-hours-mall.webp';
+import arcadeAfterDarkAvif from './assets/arcade-after-dark.avif';
+import arcadeAfterDarkWebp from './assets/arcade-after-dark.webp';
 import boomboxBeatAvif from './assets/boombox-beat.avif';
 import boomboxBeatWebp from './assets/boombox-beat.webp';
+import cassetteTowerAvif from './assets/cassette-tower.avif';
+import cassetteTowerWebp from './assets/cassette-tower.webp';
 import electricHeartAvif from './assets/electric-heart.avif';
 import electricHeartWebp from './assets/electric-heart.webp';
 import glamFlatlayAvif from './assets/glam-flatlay.avif';
 import glamFlatlayWebp from './assets/glam-flatlay.webp';
+import heartHandbagAvif from './assets/heart-handbag.avif';
+import heartHandbagWebp from './assets/heart-handbag.webp';
 import heartPerfumeAvif from './assets/heart-perfume.avif';
 import heartPerfumeWebp from './assets/heart-perfume.webp';
+import hotlinePhoneAvif from './assets/hotline-phone.avif';
+import hotlinePhoneWebp from './assets/hotline-phone.webp';
 import midnightDriveAvif from './assets/midnight-drive.avif';
 import midnightDriveWebp from './assets/midnight-drive.webp';
+import nailBarAvif from './assets/nail-bar.avif';
+import nailBarWebp from './assets/nail-bar.webp';
 import popIconAvif from './assets/pop-icon.avif';
 import popIconWebp from './assets/pop-icon.webp';
+import poolsideRadioAvif from './assets/poolside-radio.avif';
+import poolsideRadioWebp from './assets/poolside-radio.webp';
 import rollerGlamAvif from './assets/roller-glam.avif';
 import rollerGlamWebp from './assets/roller-glam.webp';
+import rollerRinkDreamAvif from './assets/roller-rink-dream.avif';
+import rollerRinkDreamWebp from './assets/roller-rink-dream.webp';
+import sodaShoppeAvif from './assets/soda-shoppe.avif';
+import sodaShoppeWebp from './assets/soda-shoppe.webp';
+import starVanityAvif from './assets/star-vanity.avif';
+import starVanityWebp from './assets/star-vanity.webp';
 import sunsetCruiseAvif from './assets/sunset-cruise.avif';
 import sunsetCruiseWebp from './assets/sunset-cruise.webp';
+import synthStationAvif from './assets/synth-station.avif';
+import synthStationWebp from './assets/synth-station.webp';
 import { catalog, categories, type DocRow } from './catalog.js';
 import './styles.css';
 
@@ -60,9 +80,10 @@ const cards = catalog
 
 app.innerHTML = `
   <header class="site-header" id="top">
+    <span class="scroll-progress" aria-hidden="true"><i></i></span>
     <a class="mini-logo" href="#top" aria-label="Pink Sensation home">PS<span>✦</span></a>
     <nav aria-label="Primary navigation">
-      <a href="#lookbook">Lookbook</a><a href="#catalog">Components</a><a href="#tokens">Tokens</a><a href="#accessibility">Accessibility</a>
+      <a href="#lookbook">Lookbook</a><a href="#campaigns">Scenes</a><a href="#catalog">Components</a><a href="#tokens">Tokens</a><a href="#accessibility">Accessibility</a>
     </nav>
     <label class="theme-control">Theme
       <select id="theme-switcher" aria-label="Color theme">
@@ -116,6 +137,7 @@ app.innerHTML = `
     <div class="marquee" aria-label="Pink Sensation features"><div>OPEN SHADOW DOM ✦ FORM ASSOCIATED ✦ THREE THEMES ✦ TYPESCRIPT ✦ COPY, PASTE, SPARKLE ✦ OPEN SHADOW DOM ✦ FORM ASSOCIATED ✦ THREE THEMES ✦ TYPESCRIPT ✦</div></div>
 
     <section id="lookbook" class="lookbook section-shell" aria-labelledby="lookbook-title" data-artwork-gallery>
+      <div class="magazine-label" aria-hidden="true"><span>Issue 01 · The Lookbook</span><i>✦</i></div>
       <div class="lookbook-heading">
         <div><span class="eyebrow">The visual mixtape</span><h2 id="lookbook-title">Mall lights. Big nights.</h2></div>
         <p>Original artwork built for the world around the components: chrome, beauty counters, roller-rink drama, and one perfect drive into sunset.</p>
@@ -148,8 +170,70 @@ app.innerHTML = `
       </div>
     </section>
 
+    <div class="editorial-expansion" data-expanded-artwork>
+      <section id="campaigns" class="campaigns section-shell" aria-labelledby="campaigns-title">
+        <div class="magazine-label" aria-hidden="true"><span>Issue 02 · Campaign Worlds</span><i>✧</i></div>
+        <div class="campaigns-heading">
+          <div><span class="eyebrow">Four places to be</span><h2 id="campaigns-title">Meet me after dark.</h2></div>
+          <p>Big, cinematic worlds give the toolkit a life beyond the component canvas—from the first arcade token to the last spin under the mirror ball.</p>
+        </div>
+        <div class="campaign-grid">
+          <figure class="campaign-card campaign-arcade">
+            <picture><source type="image/avif" srcset="${arcadeAfterDarkAvif}"><img src="${arcadeAfterDarkWebp}" width="1200" height="800" alt="Empty neon arcade with checkerboard floors and glowing game cabinets." loading="lazy" decoding="async"></picture>
+            <figcaption><span>8:08 PM · High score energy</span><strong>Arcade after dark</strong></figcaption>
+          </figure>
+          <figure class="campaign-card campaign-rink">
+            <picture><source type="image/avif" srcset="${rollerRinkDreamAvif}"><img src="${rollerRinkDreamWebp}" width="1200" height="800" alt="Pink roller rink glowing beneath a giant mirror ball." loading="lazy" decoding="async"></picture>
+            <figcaption><span>9:22 PM · One more lap</span><strong>Rink royalty</strong></figcaption>
+          </figure>
+          <figure class="campaign-card campaign-pool">
+            <picture><source type="image/avif" srcset="${poolsideRadioAvif}"><img src="${poolsideRadioWebp}" width="960" height="640" alt="Translucent pink radio and striped sunglasses beside a swimming pool." loading="lazy" decoding="async"></picture>
+            <figcaption><span>4:45 PM · Before the party</span><strong>Poolside frequency</strong></figcaption>
+          </figure>
+          <figure class="campaign-card campaign-soda">
+            <picture><source type="image/avif" srcset="${sodaShoppeAvif}"><img src="${sodaShoppeWebp}" width="960" height="640" alt="Strawberry milkshake and chrome accessories on a pink diner counter." loading="lazy" decoding="async"></picture>
+            <figcaption><span>11:57 PM · Cherry on top</span><strong>Sweetest stop</strong></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="glam-kit section-shell" aria-labelledby="glam-kit-title">
+        <div class="magazine-label" aria-hidden="true"><span>Issue 03 · The Glam Kit</span><i>✦</i></div>
+        <div class="glam-kit-heading">
+          <div><span class="eyebrow">The prop closet</span><h2 id="glam-kit-title">Pack the glam kit.</h2></div>
+          <p>Six glossy scene-stealers turn controls, cards, and product surfaces into a complete little pop universe.</p>
+        </div>
+        <div class="glam-kit-grid">
+          <figure class="glam-card glam-bag">
+            <picture><source type="image/avif" srcset="${heartHandbagAvif}"><img src="${heartHandbagWebp}" width="720" height="1080" alt="Hot-pink heart-shaped handbag with a chunky chrome chain." loading="lazy" decoding="async"></picture>
+            <figcaption><span>Carry the feeling</span><strong>Heart to go</strong></figcaption>
+          </figure>
+          <figure class="glam-card glam-phone">
+            <picture><source type="image/avif" srcset="${hotlinePhoneAvif}"><img src="${hotlinePhoneWebp}" width="720" height="720" alt="Translucent pink telephone with chrome buttons and acrylic stars." loading="lazy" decoding="async"></picture>
+            <figcaption><span>Call me anytime</span><strong>Hotline pink</strong></figcaption>
+          </figure>
+          <figure class="glam-card glam-cassettes">
+            <picture><source type="image/avif" srcset="${cassetteTowerAvif}"><img src="${cassetteTowerWebp}" width="720" height="720" alt="Tower of translucent pink, violet, and cyan cassette tapes." loading="lazy" decoding="async"></picture>
+            <figcaption><span>Rewind the night</span><strong>Mixtape stack</strong></figcaption>
+          </figure>
+          <figure class="glam-card glam-synth">
+            <picture><source type="image/avif" srcset="${synthStationAvif}"><img src="${synthStationWebp}" width="960" height="640" alt="Pink-and-chrome synthesizer with geometric controls and headphones." loading="lazy" decoding="async"></picture>
+            <figcaption><span>Make it electric</span><strong>Synth sensation</strong></figcaption>
+          </figure>
+          <figure class="glam-card glam-vanity">
+            <picture><source type="image/avif" srcset="${starVanityAvif}"><img src="${starVanityWebp}" width="720" height="1080" alt="Star-shaped illuminated vanity mirror with pearls and beauty accessories." loading="lazy" decoding="async"></picture>
+            <figcaption><span>Ready in five</span><strong>Star treatment</strong></figcaption>
+          </figure>
+          <figure class="glam-card glam-nails">
+            <picture><source type="image/avif" srcset="${nailBarAvif}"><img src="${nailBarWebp}" width="960" height="640" alt="Pink, coral, lilac, violet, and cyan nail polish on a glossy vanity." loading="lazy" decoding="async"></picture>
+            <figcaption><span>Pick your power color</span><strong>Polish party</strong></figcaption>
+          </figure>
+        </div>
+      </section>
+    </div>
+
     <section class="quick-start section-shell" aria-labelledby="start-title">
-      <div><span class="eyebrow">One tiny ritual</span><h2 id="start-title">Get glossy in two imports.</h2><p>Register everything or import only the self-registering component you need. Then put a theme on any ancestor.</p></div>
+      <div class="quick-start-copy"><span class="eyebrow">One tiny ritual</span><h2 id="start-title">Get glossy in two imports.</h2><p>Register everything or import only the self-registering component you need. Then put a theme on any ancestor.</p><figure class="quick-start-artwork"><picture><source type="image/avif" srcset="${synthStationAvif}"><img src="${synthStationWebp}" width="960" height="640" alt="" loading="lazy" decoding="async"></picture><figcaption><span>Side A · Quick start</span><strong>Plug in the pink.</strong></figcaption></figure></div>
       <div class="code-window"><div class="window-bar"><i></i><i></i><i></i><span>main.ts</span></div><pre><code>import 'pink-sensation';
 import 'pink-sensation/theme.css';
 
@@ -158,7 +242,7 @@ document.body.dataset.psTheme = 'bubblegum';</code></pre><button type="button" d
 
     <section id="catalog" class="catalog section-shell" aria-labelledby="catalog-title">
       <div class="section-heading"><div><span class="eyebrow">The whole collection</span><h2 id="catalog-title">Component showroom</h2><p>Search all ${catalog.length} custom elements. Every demo below is the real package.</p></div><div class="catalog-search"><ps-input id="catalog-search" type="search" placeholder="Search components" aria-label="Search components"><span slot="prefix">⌕</span></ps-input><span id="result-count" aria-live="polite">${catalog.length} components</span></div></div>
-      <div class="category-filters" role="group" aria-label="Filter component category"><button type="button" class="active" data-category-filter="all">All</button>${categories.map((category) => `<button type="button" data-category-filter="${escapeHtml(category)}">${escapeHtml(category)}</button>`).join('')}</div>
+      <div class="category-filters" role="group" aria-label="Filter component category"><button type="button" class="active" data-category-filter="all" aria-pressed="true">All</button>${categories.map((category) => `<button type="button" data-category-filter="${escapeHtml(category)}" aria-pressed="false">${escapeHtml(category)}</button>`).join('')}</div>
       <div class="component-grid">${cards}</div>
       <ps-empty-state id="no-results" hidden><span slot="illustration">⌕</span><span slot="heading">No sparkle found</span>Try another component name or category.</ps-empty-state>
     </section>
@@ -173,29 +257,39 @@ document.body.dataset.psTheme = 'bubblegum';</code></pre><button type="button" d
           <ps-button type="button" variant="outline" id="reset-tokens">Reset tokens</ps-button>
         </form>
         <div class="token-preview" aria-label="Token preview">
-          <ps-card><span slot="header">Friday night look</span><ps-avatar size="lg" alt="PS">PS</ps-avatar><h3>Chrome Hearts</h3><p>Roller-rink polish with a bubblegum beat.</p><ps-chip removable>Neon</ps-chip> <ps-badge variant="success">In stock</ps-badge><div slot="footer"><ps-button>Add to bag</ps-button></div></ps-card>
+          <ps-card><span slot="header" class="token-card-header"><picture><source type="image/avif" srcset="${heartHandbagAvif}"><img src="${heartHandbagWebp}" width="720" height="1080" alt="" loading="lazy" decoding="async"></picture><span><small>Fashion card · 1988</small>Friday night look</span></span><ps-avatar size="lg" alt="PS">PS</ps-avatar><h3>Chrome Hearts</h3><p>Roller-rink polish with a bubblegum beat.</p><ps-chip removable>Neon</ps-chip> <ps-badge variant="success">In stock</ps-badge><div slot="footer"><ps-button>Add to bag</ps-button></div></ps-card>
         </div>
       </div>
     </section>
 
     <section id="accessibility" class="accessibility section-shell" aria-labelledby="accessibility-title">
-      <div><span class="eyebrow">Built into the choreography</span><h2 id="accessibility-title">Focus should feel as considered as color.</h2></div>
+      <div class="accessibility-heading"><span class="eyebrow">Built into the choreography</span><h2 id="accessibility-title">Focus should feel as considered as color.</h2><picture class="accessibility-artwork"><source type="image/avif" srcset="${heartPerfumeAvif}"><img src="${heartPerfumeWebp}" width="720" height="1080" alt="" loading="lazy" decoding="async"></picture></div>
       <div class="principles"><article><b>01</b><h3>Keyboard complete</h3><p>Roving focus for tabs, menus, and radios. Escape, trapping, and restoration for overlays.</p></article><article><b>02</b><h3>Native where it counts</h3><p>ElementInternals for forms, native dialog and details semantics, and composed familiar events.</p></article><article><b>03</b><h3>Motion with consent</h3><p>Animations collapse or soften when the operating system asks for reduced motion.</p></article></div>
     </section>
   </main>
 
-  <footer><a class="mini-logo" href="#top">PS<span>✦</span></a><p>Pink Sensation v0.1.0 · MIT © 2026 TheAnonymous</p><a href="https://github.com/TheAnonymous/PinkSensation">GitHub</a></footer>
+  <footer><picture class="footer-artwork" aria-hidden="true"><source type="image/avif" srcset="${cassetteTowerAvif}"><img src="${cassetteTowerWebp}" width="720" height="720" alt="" loading="lazy" decoding="async"></picture><a class="mini-logo" href="#top">PS<span>✦</span></a><p><strong>Keep the mixtape playing.</strong><span>Pink Sensation v0.1.0 · MIT © 2026 TheAnonymous</span></p><a href="https://github.com/TheAnonymous/PinkSensation">GitHub <span aria-hidden="true">↗</span></a></footer>
   <ps-toast-stack id="global-toasts"></ps-toast-stack>
 `;
 
 const themes: ThemeName[] = ['bubblegum', 'midnight', 'pastel'];
 const themeSwitcher = document.querySelector<HTMLSelectElement>('#theme-switcher');
+const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+let themeTransitionTimer = 0;
 const savedTheme = document.documentElement.dataset.psTheme as ThemeName;
 if (themeSwitcher) themeSwitcher.value = themes.includes(savedTheme) ? savedTheme : 'bubblegum';
 themeSwitcher?.addEventListener('change', () => {
   const theme = themes.includes(themeSwitcher.value as ThemeName)
     ? (themeSwitcher.value as ThemeName)
     : 'bubblegum';
+  if (!motionQuery.matches) {
+    document.documentElement.classList.add('theme-transitioning');
+    window.clearTimeout(themeTransitionTimer);
+    themeTransitionTimer = window.setTimeout(
+      () => document.documentElement.classList.remove('theme-transitioning'),
+      420,
+    );
+  }
   document.documentElement.dataset.psTheme = theme;
   try {
     localStorage.setItem('ps-theme', theme);
@@ -205,6 +299,11 @@ themeSwitcher?.addEventListener('change', () => {
 });
 
 const toastStack = document.querySelector<PsToastStack>('#global-toasts');
+const copyFeedbackTimers = new WeakMap<HTMLElement, number>();
+document.querySelectorAll<HTMLElement>('[data-copy]').forEach((button) => {
+  button.dataset.copyLabel = button.textContent?.trim() ?? 'Copy';
+  button.setAttribute('aria-live', 'polite');
+});
 document.addEventListener('click', async (event) => {
   const path = event.composedPath();
   const action = path.find(
@@ -222,6 +321,18 @@ document.addEventListener('click', async (event) => {
   if (action.dataset.copy !== undefined) {
     try {
       await navigator.clipboard.writeText(action.dataset.copy);
+      const previousTimer = copyFeedbackTimers.get(action);
+      if (previousTimer) window.clearTimeout(previousTimer);
+      action.textContent = 'Copied!';
+      action.dataset.copyState = 'success';
+      copyFeedbackTimers.set(
+        action,
+        window.setTimeout(() => {
+          action.textContent = action.dataset.copyLabel ?? 'Copy';
+          delete action.dataset.copyState;
+          copyFeedbackTimers.delete(action);
+        }, 1600),
+      );
       toastStack?.push({
         title: 'Copied',
         message: 'Ready for your project.',
@@ -233,7 +344,9 @@ document.addEventListener('click', async (event) => {
     }
   }
   if (action.hasAttribute('data-scroll-catalog'))
-    document.querySelector('#catalog')?.scrollIntoView({ behavior: 'smooth' });
+    document
+      .querySelector('#catalog')
+      ?.scrollIntoView({ behavior: motionQuery.matches ? 'auto' : 'smooth' });
   if (action.hasAttribute('data-demo-toast'))
     toastStack?.push({
       title: 'Totally saved',
@@ -272,9 +385,11 @@ document.querySelector<PsInput>('#catalog-search')?.addEventListener('input', (e
 document.querySelectorAll<HTMLButtonElement>('[data-category-filter]').forEach((button) =>
   button.addEventListener('click', () => {
     currentCategory = button.dataset.categoryFilter ?? 'all';
-    document
-      .querySelectorAll('[data-category-filter]')
-      .forEach((item) => item.classList.toggle('active', item === button));
+    document.querySelectorAll<HTMLButtonElement>('[data-category-filter]').forEach((item) => {
+      const active = item === button;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-pressed', String(active));
+    });
     filterCatalog();
   }),
 );
@@ -295,7 +410,143 @@ document.querySelector('#reset-tokens')?.addEventListener('click', () => {
 });
 
 const mobileToggle = document.querySelector<HTMLButtonElement>('.mobile-nav');
+const primaryNavigation = document.querySelector<HTMLElement>('.site-header nav');
+const mobileBreakpoint = window.matchMedia('(max-width: 54rem)');
+const closeMobileNavigation = (restoreFocus = false) => {
+  if (!document.body.classList.contains('nav-open')) return;
+  document.body.classList.remove('nav-open');
+  mobileToggle?.setAttribute('aria-expanded', 'false');
+  if (restoreFocus) mobileToggle?.focus();
+};
 mobileToggle?.addEventListener('click', () => {
   const open = document.body.classList.toggle('nav-open');
   mobileToggle.setAttribute('aria-expanded', String(open));
 });
+primaryNavigation?.addEventListener('click', (event) => {
+  if (event.target instanceof HTMLAnchorElement) closeMobileNavigation();
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && document.body.classList.contains('nav-open')) {
+    event.preventDefault();
+    closeMobileNavigation(true);
+  }
+});
+mobileBreakpoint.addEventListener('change', (event) => {
+  if (!event.matches) closeMobileNavigation();
+});
+
+const siteHeader = document.querySelector<HTMLElement>('.site-header');
+const hero = document.querySelector<HTMLElement>('.hero');
+const navigationLinks = [...document.querySelectorAll<HTMLAnchorElement>('.site-header nav a')];
+const navigationSections = navigationLinks
+  .map((link) => {
+    const id = link.hash.slice(1);
+    const section = document.getElementById(id);
+    return section ? { link, section } : undefined;
+  })
+  .filter((entry): entry is { link: HTMLAnchorElement; section: HTMLElement } => Boolean(entry));
+let viewportFrame = 0;
+const syncViewportState = () => {
+  viewportFrame = 0;
+  if (!siteHeader) return;
+  const maxScroll = Math.max(
+    1,
+    document.documentElement.scrollHeight - document.documentElement.clientHeight,
+  );
+  siteHeader.style.setProperty(
+    '--scroll-progress',
+    `${Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100))}%`,
+  );
+  const compactAt = hero ? hero.offsetTop + hero.offsetHeight - siteHeader.offsetHeight : 120;
+  siteHeader.classList.toggle('is-compact', window.scrollY >= compactAt);
+
+  const checkpoint = window.scrollY + siteHeader.offsetHeight + window.innerHeight * 0.18;
+  const current = [...navigationSections]
+    .reverse()
+    .find(({ section }) => section.offsetTop <= checkpoint);
+  navigationLinks.forEach((link) => {
+    if (link === current?.link) link.setAttribute('aria-current', 'location');
+    else link.removeAttribute('aria-current');
+  });
+};
+const requestViewportSync = () => {
+  if (viewportFrame) return;
+  viewportFrame = window.requestAnimationFrame(syncViewportState);
+};
+window.addEventListener('scroll', requestViewportSync, { passive: true });
+window.addEventListener('resize', requestViewportSync);
+
+const revealElements = [
+  ...document.querySelectorAll<HTMLElement>(
+    '.lookbook-heading, .campaigns-heading, .glam-kit-heading, .quick-start > *, .catalog .section-heading, .category-filters, .component-card, .tokens .section-heading, .token-layout, .accessibility > *, .magazine-label',
+  ),
+];
+revealElements.forEach((element, index) => {
+  element.dataset.reveal = '';
+  element.style.setProperty('--reveal-delay', `${(index % 6) * 65}ms`);
+});
+if (motionQuery.matches || !('IntersectionObserver' in window)) {
+  revealElements.forEach((element) => element.classList.add('is-revealed'));
+} else {
+  const revealObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-revealed');
+        observer.unobserve(entry.target);
+      });
+    },
+    { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+  );
+  revealElements.forEach((element) => revealObserver.observe(element));
+}
+
+const artworkCards = [
+  ...document.querySelectorAll<HTMLElement>(
+    '.lookbook-card, .campaign-card, .glam-card, .quick-start-artwork',
+  ),
+];
+artworkCards.forEach((card) => {
+  card.dataset.artworkCard = '';
+  card.addEventListener('pointermove', (event) => {
+    if (motionQuery.matches || !window.matchMedia('(hover: hover) and (pointer: fine)').matches)
+      return;
+    const bounds = card.getBoundingClientRect();
+    card.style.setProperty('--shine-x', `${event.clientX - bounds.left}px`);
+    card.style.setProperty('--shine-y', `${event.clientY - bounds.top}px`);
+  });
+});
+
+document.querySelectorAll<HTMLPictureElement>('picture').forEach((picture) => {
+  const image = picture.querySelector('img');
+  if (!image) return;
+  picture.dataset.imageState = 'loading';
+  const markDecoded = async () => {
+    try {
+      await image.decode();
+      picture.dataset.imageState = 'loaded';
+    } catch {
+      picture.dataset.imageState = image.complete && image.naturalWidth > 0 ? 'loaded' : 'error';
+    }
+  };
+  if (image.complete) void markDecoded();
+  else {
+    image.addEventListener('load', () => void markDecoded(), { once: true });
+    image.addEventListener('error', () => (picture.dataset.imageState = 'error'), { once: true });
+  }
+});
+
+const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+const syncMotionPreferences = () => {
+  document.documentElement.classList.toggle('motion-ok', !motionQuery.matches);
+  document.documentElement.classList.toggle(
+    'pointer-glow',
+    !motionQuery.matches && finePointerQuery.matches,
+  );
+  if (motionQuery.matches) document.documentElement.classList.remove('theme-transitioning');
+};
+motionQuery.addEventListener('change', syncMotionPreferences);
+finePointerQuery.addEventListener('change', syncMotionPreferences);
+syncMotionPreferences();
+syncViewportState();
+document.documentElement.classList.add('showcase-ready');

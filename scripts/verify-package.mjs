@@ -37,7 +37,7 @@ await run('npm', ['run', 'manifest', '-w', 'pink-sensation']);
 const artifacts = resolve(root, 'artifacts');
 await mkdir(artifacts, { recursive: true });
 await rm(resolve(artifacts, 'pink-sensation-0.1.0.tgz'), { force: true });
-const packed = JSON.parse(
+const packedOutput = JSON.parse(
   await capture('npm', [
     'pack',
     './packages/pink-sensation',
@@ -46,6 +46,7 @@ const packed = JSON.parse(
     artifacts,
   ]),
 );
+const packed = Array.isArray(packedOutput) ? packedOutput : Object.values(packedOutput);
 const pack = packed[0];
 if (!pack) throw new Error('npm pack did not return package metadata.');
 
@@ -92,14 +93,24 @@ if ([...fileNames].some((file) => file.toLowerCase().includes('righteous'))) {
 }
 const showroomArtwork = [
   'after-hours-mall',
+  'arcade-after-dark',
   'boombox-beat',
+  'cassette-tower',
   'electric-heart',
   'glam-flatlay',
+  'heart-handbag',
   'heart-perfume',
+  'hotline-phone',
   'midnight-drive',
+  'nail-bar',
   'pop-icon',
+  'poolside-radio',
   'roller-glam',
+  'roller-rink-dream',
+  'soda-shoppe',
+  'star-vanity',
   'sunset-cruise',
+  'synth-station',
 ];
 if ([...fileNames].some((file) => showroomArtwork.some((name) => file.includes(name)))) {
   throw new Error('Tarball unexpectedly contains showroom-only artwork.');
