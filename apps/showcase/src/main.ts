@@ -61,21 +61,77 @@ const table = (label: string, rows: DocRow[]) => `
     </table>
   </div>`;
 
+const featureArtwork: Record<
+  string,
+  { avif: string; webp: string; caption: string; note: string }
+> = {
+  'ps-button': {
+    avif: electricHeartAvif,
+    webp: electricHeartWebp,
+    caption: 'Electric Heart',
+    note: 'Press play',
+  },
+  'ps-input': {
+    avif: glamFlatlayAvif,
+    webp: glamFlatlayWebp,
+    caption: 'Glam Flatlay',
+    note: 'Write it down',
+  },
+  'ps-card': {
+    avif: heartHandbagAvif,
+    webp: heartHandbagWebp,
+    caption: 'Heart Handbag',
+    note: 'Carry the story',
+  },
+  'ps-alert': {
+    avif: boomboxBeatAvif,
+    webp: boomboxBeatWebp,
+    caption: 'Boombox Beat',
+    note: 'Turn it up',
+  },
+  'ps-tabs': {
+    avif: arcadeAfterDarkAvif,
+    webp: arcadeAfterDarkWebp,
+    caption: 'Arcade After Dark',
+    note: 'Pick a level',
+  },
+  'ps-dialog': {
+    avif: hotlinePhoneAvif,
+    webp: hotlinePhoneWebp,
+    caption: 'Hotline Phone',
+    note: 'Answer the call',
+  },
+};
+
 const cards = catalog
-  .map(
-    (item) => `
-      <article class="component-card" data-component-card data-search="${escapeHtml(`${item.tag} ${item.title} ${item.category} ${item.description}`.toLowerCase())}" data-category="${escapeHtml(item.category)}" id="${item.tag}">
+  .map((item, index) => {
+    const artwork = featureArtwork[item.tag];
+    const serial = `PS-${String(index + 1).padStart(3, '0')}`;
+    const demo = `<div class="demo" data-demo-for="${item.tag}">${item.demo}</div>`;
+    const code = `<div class="example-bar"><span>HTML</span><button type="button" data-copy="${escapeHtml(item.example)}">Copy</button></div><pre><code>${escapeHtml(item.example)}</code></pre>`;
+    const featureWorkbench = artwork
+      ? `<div class="feature-workbench">
+            <div class="feature-stage">
+              <figure class="feature-artwork" data-feature-artwork aria-hidden="true">
+                <picture><source type="image/avif" srcset="${artwork.avif}"><img src="${artwork.webp}" width="768" height="768" alt="" loading="lazy" decoding="async"></picture>
+                <span>${escapeHtml(artwork.caption)}</span><strong>${escapeHtml(artwork.note)}</strong>
+              </figure>
+              <div class="feature-demo"><span class="stage-label">Live demo · take 01</span>${demo}</div>
+            </div>
+            <div class="feature-code">${code}</div>
+          </div>`
+      : `${demo}${code}`;
+    return `
+      <article class="component-card${artwork ? ' feature-card' : ''}" data-component-card${artwork ? ' data-feature-card' : ''} data-serial="${serial}" data-search="${escapeHtml(`${item.tag} ${item.title} ${item.category} ${item.description}`.toLowerCase())}" data-category="${escapeHtml(item.category)}" id="${item.tag}">
         <div class="component-heading">
           <div><span class="eyebrow">${escapeHtml(item.category)}</span><h3>${escapeHtml(item.title)}</h3><code>&lt;${item.tag}&gt;</code></div>
-          <a class="anchor" href="#${item.tag}" aria-label="Link to ${escapeHtml(item.title)}">#</a>
+          <div class="component-index"><span class="component-serial" aria-label="Component serial ${serial}">${serial}</span><a class="anchor" href="#${item.tag}" aria-label="Link to ${escapeHtml(item.title)}">#</a></div>
         </div>
         <p>${escapeHtml(item.description)}</p>
-        <div class="demo" data-demo-for="${item.tag}">${item.demo}</div>
-        <div class="example-bar"><span>HTML</span><button type="button" data-copy="${escapeHtml(item.example)}">Copy</button></div>
-        <pre><code>${escapeHtml(item.example)}</code></pre>
+        ${featureWorkbench}
         <details class="api-details"><summary>API details</summary><div class="api-grid">${table('Properties & methods', item.properties)}${table('Events', item.events)}${table('Slots', item.slots)}${table('Parts', item.parts)}</div></details>
-      </article>`,
-  )
+      </article>`;
+  })
   .join('');
 
 app.innerHTML = `
@@ -83,8 +139,9 @@ app.innerHTML = `
     <span class="scroll-progress" aria-hidden="true"><i></i></span>
     <a class="mini-logo" href="#top" aria-label="Pink Sensation home">PS<span>✦</span></a>
     <nav aria-label="Primary navigation">
-      <a href="#lookbook">Lookbook</a><a href="#campaigns">Scenes</a><a href="#catalog">Components</a><a href="#tokens">Tokens</a><a href="#accessibility">Accessibility</a>
+      <a href="#lookbook"><span aria-hidden="true">01</span>Lookbook</a><a href="#campaigns"><span aria-hidden="true">02</span>Scenes</a><a href="#catalog"><span aria-hidden="true">03</span>Components</a><a href="#tokens"><span aria-hidden="true">04</span>Tokens</a><a href="#accessibility"><span aria-hidden="true">05</span>Accessibility</a>
     </nav>
+    <span class="header-docket" aria-hidden="true">PS · 01/39</span>
     <label class="theme-control">Theme
       <select id="theme-switcher" aria-label="Color theme">
         <option value="bubblegum">Bubblegum</option><option value="midnight">Midnight</option><option value="pastel">Pastel</option>
@@ -96,6 +153,8 @@ app.innerHTML = `
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
       <div class="sparkle sparkle-one">✦</div><div class="sparkle sparkle-two">✧</div><div class="hero-squiggle" aria-hidden="true">⌁</div>
+      <span class="hero-issue" aria-hidden="true">Issue no. 01 · Summer 1988</span>
+      <span class="hero-production-note" aria-hidden="true">final mix ✓<br>chrome at 100%</span>
       <div class="hero-board">
         <div class="hero-brand-panel">
           <p class="kicker">Web Components · v0.1.0</p>
@@ -103,14 +162,14 @@ app.innerHTML = `
           <p class="hero-copy">Accessible components for interfaces that deserve more gloss, more joy, and a little more mall after dark.</p>
           <div class="hero-actions"><ps-button size="lg" data-scroll-catalog>See the collection <span slot="suffix">→</span></ps-button><ps-button size="lg" variant="outline" data-copy="npm install pink-sensation">npm install</ps-button></div>
           <div class="cover-strip" aria-label="Original Pink Sensation artwork">
-            <picture><source type="image/avif" srcset="${electricHeartAvif}"><img src="${electricHeartWebp}" width="768" height="768" alt="" loading="lazy" decoding="async"></picture>
-            <picture><source type="image/avif" srcset="${midnightDriveAvif}"><img src="${midnightDriveWebp}" width="768" height="768" alt="" loading="lazy" decoding="async"></picture>
+            <picture data-crop="A"><source type="image/avif" srcset="${electricHeartAvif}"><img src="${electricHeartWebp}" width="768" height="768" alt="" loading="lazy" decoding="async"></picture>
+            <picture data-crop="B"><source type="image/avif" srcset="${midnightDriveAvif}"><img src="${midnightDriveWebp}" width="768" height="768" alt="" loading="lazy" decoding="async"></picture>
             <p><strong>Original artwork</strong><span>Chrome, cassette tape, and midnight neon.</span></p>
           </div>
         </div>
 
         <section class="hero-dashboard-panel" aria-label="Toolkit highlights">
-          <header class="dashboard-panel-header"><div><span class="status-dot"></span><strong>Toolkit status</strong></div><ps-badge variant="success">Ready to glow</ps-badge></header>
+          <header class="dashboard-panel-header"><div><span class="status-dot"></span><strong>Toolkit status</strong><small>mastered 07·14</small></div><ps-badge variant="success">Ready to glow</ps-badge></header>
           <div class="hero-metrics">
             <ps-card class="metric-card"><span slot="header">Elements <span aria-hidden="true">✦</span></span><strong>39</strong><small>One complete collection</small></ps-card>
             <ps-card class="metric-card"><span slot="header">Themes <span aria-hidden="true">◉</span></span><strong>03</strong><small>One expressive system</small></ps-card>
@@ -126,7 +185,7 @@ app.innerHTML = `
 
         <article class="now-playing">
           <div class="player-art"><picture><source type="image/avif" srcset="${popIconAvif}"><img src="${popIconWebp}" width="960" height="1200" alt="" fetchpriority="high" decoding="async"></picture><span class="player-kicker">Now playing</span><span class="player-menu" aria-hidden="true">⋮</span></div>
-          <div class="player-copy"><span>Neon Dreams</span><strong>Jessie Stardust</strong></div>
+          <div class="player-copy"><span>Neon Dreams</span><strong>Jessie Stardust</strong><small>PS-CASS 008 · side A</small></div>
           <ps-progress value="68" aria-label="Showcase progress"></ps-progress>
           <div class="player-time"><span>2:41</span><span>3:52</span></div>
           <div class="player-controls" aria-hidden="true"><span>↝</span><span>◀</span><b>▶</b><span>▶</span><span>♡</span></div>
@@ -136,7 +195,7 @@ app.innerHTML = `
 
     <div class="marquee" aria-label="Pink Sensation features"><div>OPEN SHADOW DOM ✦ FORM ASSOCIATED ✦ THREE THEMES ✦ TYPESCRIPT ✦ COPY, PASTE, SPARKLE ✦ OPEN SHADOW DOM ✦ FORM ASSOCIATED ✦ THREE THEMES ✦ TYPESCRIPT ✦</div></div>
 
-    <section id="lookbook" class="lookbook section-shell" aria-labelledby="lookbook-title" data-artwork-gallery>
+    <section id="lookbook" class="lookbook section-shell scrapbook-section" aria-labelledby="lookbook-title" data-artwork-gallery data-section-note="cut, paste, repeat">
       <div class="magazine-label" aria-hidden="true"><span>Issue 01 · The Lookbook</span><i>✦</i></div>
       <div class="lookbook-heading">
         <div><span class="eyebrow">The visual mixtape</span><h2 id="lookbook-title">Mall lights. Big nights.</h2></div>
@@ -171,7 +230,7 @@ app.innerHTML = `
     </section>
 
     <div class="editorial-expansion" data-expanded-artwork>
-      <section id="campaigns" class="campaigns section-shell" aria-labelledby="campaigns-title">
+      <section id="campaigns" class="campaigns section-shell scrapbook-section" aria-labelledby="campaigns-title" data-section-note="meet me under the neon">
         <div class="magazine-label" aria-hidden="true"><span>Issue 02 · Campaign Worlds</span><i>✧</i></div>
         <div class="campaigns-heading">
           <div><span class="eyebrow">Four places to be</span><h2 id="campaigns-title">Meet me after dark.</h2></div>
@@ -197,7 +256,7 @@ app.innerHTML = `
         </div>
       </section>
 
-      <section class="glam-kit section-shell" aria-labelledby="glam-kit-title">
+      <section class="glam-kit section-shell scrapbook-section" aria-labelledby="glam-kit-title" data-section-note="pack list ✓">
         <div class="magazine-label" aria-hidden="true"><span>Issue 03 · The Glam Kit</span><i>✦</i></div>
         <div class="glam-kit-heading">
           <div><span class="eyebrow">The prop closet</span><h2 id="glam-kit-title">Pack the glam kit.</h2></div>
@@ -232,22 +291,22 @@ app.innerHTML = `
       </section>
     </div>
 
-    <section class="quick-start section-shell" aria-labelledby="start-title">
-      <div class="quick-start-copy"><span class="eyebrow">One tiny ritual</span><h2 id="start-title">Get glossy in two imports.</h2><p>Register everything or import only the self-registering component you need. Then put a theme on any ancestor.</p><figure class="quick-start-artwork"><picture><source type="image/avif" srcset="${synthStationAvif}"><img src="${synthStationWebp}" width="960" height="640" alt="" loading="lazy" decoding="async"></picture><figcaption><span>Side A · Quick start</span><strong>Plug in the pink.</strong></figcaption></figure></div>
-      <div class="code-window"><div class="window-bar"><i></i><i></i><i></i><span>main.ts</span></div><pre><code>import 'pink-sensation';
+    <section class="quick-start section-shell scrapbook-section" aria-labelledby="start-title" data-section-note="two steps · zero fuss">
+      <div class="quick-start-copy"><span class="step-number" aria-hidden="true">01</span><span class="eyebrow">One tiny ritual</span><h2 id="start-title">Get glossy in two imports.</h2><p><strong>Register the collection.</strong> Import everything or only the self-registering component you need.</p><figure class="quick-start-artwork"><picture><source type="image/avif" srcset="${synthStationAvif}"><img src="${synthStationWebp}" width="960" height="640" alt="" loading="lazy" decoding="async"></picture><figcaption><span>Side A · Quick start</span><strong>Plug in the pink.</strong></figcaption></figure></div>
+      <div class="code-window"><span class="step-number" aria-hidden="true">02</span><p class="code-instruction"><strong>Choose a theme.</strong> Put it on any ancestor, then copy the complete starter.</p><div class="window-bar"><i></i><i></i><i></i><span>main.ts</span></div><pre><code>import 'pink-sensation';
 import 'pink-sensation/theme.css';
 
 document.body.dataset.psTheme = 'bubblegum';</code></pre><button type="button" data-copy="import 'pink-sensation';\nimport 'pink-sensation/theme.css';">Copy imports</button></div>
     </section>
 
-    <section id="catalog" class="catalog section-shell" aria-labelledby="catalog-title">
+    <section id="catalog" class="catalog section-shell scrapbook-section" aria-labelledby="catalog-title" data-section-note="39 tracks · no skips">
       <div class="section-heading"><div><span class="eyebrow">The whole collection</span><h2 id="catalog-title">Component showroom</h2><p>Search all ${catalog.length} custom elements. Every demo below is the real package.</p></div><div class="catalog-search"><ps-input id="catalog-search" type="search" placeholder="Search components" aria-label="Search components"><span slot="prefix">⌕</span></ps-input><span id="result-count" aria-live="polite">${catalog.length} components</span></div></div>
       <div class="category-filters" role="group" aria-label="Filter component category"><button type="button" class="active" data-category-filter="all" aria-pressed="true">All</button>${categories.map((category) => `<button type="button" data-category-filter="${escapeHtml(category)}" aria-pressed="false">${escapeHtml(category)}</button>`).join('')}</div>
       <div class="component-grid">${cards}</div>
       <ps-empty-state id="no-results" hidden><span slot="illustration">⌕</span><span slot="heading">No sparkle found</span>Try another component name or category.</ps-empty-state>
     </section>
 
-    <section id="tokens" class="tokens section-shell" aria-labelledby="tokens-title">
+    <section id="tokens" class="tokens section-shell scrapbook-section" aria-labelledby="tokens-title" data-section-note="mix your own finish">
       <div class="section-heading"><div><span class="eyebrow">Safe knobs only</span><h2 id="tokens-title">Token playground</h2><p>Choose documented values; this playground never evaluates pasted markup or CSS.</p></div></div>
       <div class="token-layout">
         <form class="token-controls" id="token-form">
@@ -258,17 +317,22 @@ document.body.dataset.psTheme = 'bubblegum';</code></pre><button type="button" d
         </form>
         <div class="token-preview" aria-label="Token preview">
           <ps-card><span slot="header" class="token-card-header"><picture><source type="image/avif" srcset="${heartHandbagAvif}"><img src="${heartHandbagWebp}" width="720" height="1080" alt="" loading="lazy" decoding="async"></picture><span><small>Fashion card · 1988</small>Friday night look</span></span><ps-avatar size="lg" alt="PS">PS</ps-avatar><h3>Chrome Hearts</h3><p>Roller-rink polish with a bubblegum beat.</p><ps-chip removable>Neon</ps-chip> <ps-badge variant="success">In stock</ps-badge><div slot="footer"><ps-button>Add to bag</ps-button></div></ps-card>
+          <aside class="style-receipt" data-style-receipt aria-live="polite" aria-label="Selected token style receipt">
+            <div><strong>Style receipt</strong><span>PS · MIX 001</span></div>
+            <dl><dt>Color</dt><dd data-receipt-primary>Hot pink · #f20a86</dd><dt>Radius</dt><dd data-receipt-radius>Soft · 0.9rem</dd><dt>Shadow</dt><dd data-receipt-shadow>Classic · 6px</dd></dl>
+            <p>Thank you for keeping it glossy <span aria-hidden="true">♡</span></p>
+          </aside>
         </div>
       </div>
     </section>
 
-    <section id="accessibility" class="accessibility section-shell" aria-labelledby="accessibility-title">
+    <section id="accessibility" class="accessibility section-shell scrapbook-section" aria-labelledby="accessibility-title" data-section-note="checked twice ✓">
       <div class="accessibility-heading"><span class="eyebrow">Built into the choreography</span><h2 id="accessibility-title">Focus should feel as considered as color.</h2><picture class="accessibility-artwork"><source type="image/avif" srcset="${heartPerfumeAvif}"><img src="${heartPerfumeWebp}" width="720" height="1080" alt="" loading="lazy" decoding="async"></picture></div>
-      <div class="principles"><article><b>01</b><h3>Keyboard complete</h3><p>Roving focus for tabs, menus, and radios. Escape, trapping, and restoration for overlays.</p></article><article><b>02</b><h3>Native where it counts</h3><p>ElementInternals for forms, native dialog and details semantics, and composed familiar events.</p></article><article><b>03</b><h3>Motion with consent</h3><p>Animations collapse or soften when the operating system asks for reduced motion.</p></article></div>
+      <div class="principles"><article><span class="approval-mark" aria-hidden="true">checked ✓</span><b>01</b><h3>Keyboard complete</h3><p>Roving focus for tabs, menus, and radios. Escape, trapping, and restoration for overlays.</p></article><article><span class="approval-mark" aria-hidden="true">native</span><b>02</b><h3>Native where it counts</h3><p>ElementInternals for forms, native dialog and details semantics, and composed familiar events.</p></article><article><span class="approval-mark" aria-hidden="true">gentle ✓</span><b>03</b><h3>Motion with consent</h3><p>Animations collapse or soften when the operating system asks for reduced motion.</p></article></div>
     </section>
   </main>
 
-  <footer><picture class="footer-artwork" aria-hidden="true"><source type="image/avif" srcset="${cassetteTowerAvif}"><img src="${cassetteTowerWebp}" width="720" height="720" alt="" loading="lazy" decoding="async"></picture><a class="mini-logo" href="#top">PS<span>✦</span></a><p><strong>Keep the mixtape playing.</strong><span>Pink Sensation v0.1.0 · MIT © 2026 TheAnonymous</span></p><a href="https://github.com/TheAnonymous/PinkSensation">GitHub <span aria-hidden="true">↗</span></a></footer>
+  <footer data-mixtape-note="rewind · replay · remix"><picture class="footer-artwork" aria-hidden="true"><source type="image/avif" srcset="${cassetteTowerAvif}"><img src="${cassetteTowerWebp}" width="720" height="720" alt="" loading="lazy" decoding="async"></picture><a class="mini-logo" href="#top">PS<span>✦</span></a><p><strong>Keep the mixtape playing.</strong><span>Pink Sensation v0.1.0 · MIT © 2026 TheAnonymous</span></p><span class="footer-catalogue" aria-hidden="true">CAT. PS-1988 · SIDE ∞</span><a href="https://github.com/TheAnonymous/PinkSensation">GitHub <span aria-hidden="true">↗</span></a></footer>
   <ps-toast-stack id="global-toasts"></ps-toast-stack>
 `;
 
@@ -337,7 +401,7 @@ document.addEventListener('click', async (event) => {
         title: 'Copied',
         message: 'Ready for your project.',
         variant: 'success',
-        duration: 2200,
+        duration: 5000,
       });
     } catch {
       toastStack?.push({ message: 'Clipboard permission was unavailable.', variant: 'warning' });
@@ -395,18 +459,49 @@ document.querySelectorAll<HTMLButtonElement>('[data-category-filter]').forEach((
 );
 
 const tokenForm = document.querySelector<HTMLFormElement>('#token-form');
+const updateStyleReceipt = () => {
+  if (!tokenForm) return;
+  const selected = (name: string) =>
+    tokenForm.elements.namedItem(name) instanceof HTMLSelectElement
+      ? (tokenForm.elements.namedItem(name) as HTMLSelectElement)
+      : undefined;
+  const primary = selected('primary');
+  const radius = selected('radius');
+  const shadow = selected('shadow');
+  const writeReceipt = (selector: string, value: string) => {
+    const field = document.querySelector<HTMLElement>(selector);
+    if (field) field.textContent = value;
+  };
+  if (primary)
+    writeReceipt(
+      '[data-receipt-primary]',
+      `${primary.selectedOptions[0]?.textContent ?? 'Color'} · ${primary.value}`,
+    );
+  if (radius)
+    writeReceipt(
+      '[data-receipt-radius]',
+      `${radius.selectedOptions[0]?.textContent ?? 'Radius'} · ${radius.value}`,
+    );
+  if (shadow)
+    writeReceipt(
+      '[data-receipt-shadow]',
+      `${shadow.selectedOptions[0]?.textContent ?? 'Shadow'} · ${shadow.value.match(/0 (\d+)px/)?.[1] ?? '0'}px`,
+    );
+};
 const applyTokens = () => {
   if (!tokenForm) return;
   const values = new FormData(tokenForm);
   document.documentElement.style.setProperty('--ps-color-primary', String(values.get('primary')));
   document.documentElement.style.setProperty('--ps-radius-md', String(values.get('radius')));
   document.documentElement.style.setProperty('--ps-shadow-md', String(values.get('shadow')));
+  updateStyleReceipt();
 };
 tokenForm?.addEventListener('change', applyTokens);
 document.querySelector('#reset-tokens')?.addEventListener('click', () => {
   tokenForm?.reset();
   for (const token of ['--ps-color-primary', '--ps-radius-md', '--ps-shadow-md'])
     document.documentElement.style.removeProperty(token);
+  updateStyleReceipt();
 });
 
 const mobileToggle = document.querySelector<HTMLButtonElement>('.mobile-nav');
@@ -460,10 +555,10 @@ const syncViewportState = () => {
   const compactAt = hero ? hero.offsetTop + hero.offsetHeight - siteHeader.offsetHeight : 120;
   siteHeader.classList.toggle('is-compact', window.scrollY >= compactAt);
 
-  const checkpoint = window.scrollY + siteHeader.offsetHeight + window.innerHeight * 0.18;
+  const checkpoint = window.scrollY + siteHeader.offsetHeight + window.innerHeight * 0.33;
   const current = [...navigationSections]
     .reverse()
-    .find(({ section }) => section.offsetTop <= checkpoint);
+    .find(({ section }) => section.getBoundingClientRect().top + window.scrollY <= checkpoint);
   navigationLinks.forEach((link) => {
     if (link === current?.link) link.setAttribute('aria-current', 'location');
     else link.removeAttribute('aria-current');
@@ -475,6 +570,10 @@ const requestViewportSync = () => {
 };
 window.addEventListener('scroll', requestViewportSync, { passive: true });
 window.addEventListener('resize', requestViewportSync);
+const showcaseMain = document.querySelector<HTMLElement>('main');
+const layoutObserver =
+  showcaseMain && 'ResizeObserver' in window ? new ResizeObserver(requestViewportSync) : undefined;
+if (showcaseMain) layoutObserver?.observe(showcaseMain);
 
 const revealElements = [
   ...document.querySelectorAll<HTMLElement>(
@@ -484,6 +583,12 @@ const revealElements = [
 revealElements.forEach((element, index) => {
   element.dataset.reveal = '';
   element.style.setProperty('--reveal-delay', `${(index % 6) * 65}ms`);
+  element.style.setProperty('--reveal-x', `${[-10, 8, -6, 12, -4, 7][index % 6]}px`);
+  element.style.setProperty('--reveal-y', `${[22, 18, 27, 20, 24, 16][index % 6]}px`);
+  element.style.setProperty(
+    '--reveal-rotation',
+    `${[-0.8, 0.55, -0.35, 0.7, -0.5, 0.4][index % 6]}deg`,
+  );
 });
 if (motionQuery.matches || !('IntersectionObserver' in window)) {
   revealElements.forEach((element) => element.classList.add('is-revealed'));
@@ -503,7 +608,7 @@ if (motionQuery.matches || !('IntersectionObserver' in window)) {
 
 const artworkCards = [
   ...document.querySelectorAll<HTMLElement>(
-    '.lookbook-card, .campaign-card, .glam-card, .quick-start-artwork',
+    '.lookbook-card, .campaign-card, .glam-card, .quick-start-artwork, .feature-artwork',
   ),
 ];
 artworkCards.forEach((card) => {

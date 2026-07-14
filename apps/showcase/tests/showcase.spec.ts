@@ -184,6 +184,44 @@ const prepareQuickStartVisual = async (page: Page) => {
   );
 };
 
+const prepareSectionVisual = async (page: Page, selector: string) => {
+  await page.evaluate(() => document.fonts.ready);
+  const section = page.locator(selector);
+  const images = section.locator('img');
+  await section.scrollIntoViewIfNeeded();
+  await images.evaluateAll((elements) => {
+    for (const element of elements) (element as HTMLImageElement).loading = 'eager';
+  });
+  if ((await images.count()) > 0) {
+    await expect
+      .poll(
+        () =>
+          images.evaluateAll((elements) =>
+            elements.every((element) => {
+              const artwork = element as HTMLImageElement;
+              return artwork.complete && artwork.naturalWidth > 0;
+            }),
+          ),
+        { timeout: 15_000 },
+      )
+      .toBe(true);
+    await images.evaluateAll((elements) =>
+      Promise.all(elements.map((element) => (element as HTMLImageElement).decode())),
+    );
+  }
+  await section.locator('[data-reveal]').evaluateAll((elements) => {
+    for (const element of elements) element.classList.add('is-revealed');
+  });
+  if (await section.getAttribute('data-reveal'))
+    await section.evaluate((element) => element.classList.add('is-revealed'));
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      ),
+  );
+};
+
 test.beforeEach(async ({ page }) => {
   await page.goto('./');
   await expect(page.locator('body')).toBeVisible();
@@ -204,6 +242,37 @@ test('loads the landing page and all component documentation', async ({ page }) 
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
   expect(overflow).toBeLessThanOrEqual(1);
+});
+
+test('assigns unique serials and the six editorial feature cards without reordering', async ({
+  page,
+}) => {
+  const cards = page.locator('[data-component-card]');
+  const serials = await cards.evaluateAll((elements) =>
+    elements.map((element) => (element as HTMLElement).dataset.serial),
+  );
+  expect(serials).toEqual(
+    Array.from({ length: 39 }, (_, index) => `PS-${String(index + 1).padStart(3, '0')}`),
+  );
+  expect(new Set(serials).size).toBe(39);
+
+  const featureTags = await page
+    .locator('[data-feature-card]')
+    .evaluateAll((elements) => elements.map((element) => element.id));
+  expect(featureTags).toEqual([
+    'ps-button',
+    'ps-input',
+    'ps-card',
+    'ps-alert',
+    'ps-tabs',
+    'ps-dialog',
+  ]);
+  await expect(page.locator('[data-feature-card] [data-feature-artwork]')).toHaveCount(6);
+  await expect(page.locator('[data-feature-card] .demo')).toHaveCount(6);
+  const featureColumns = await page
+    .locator('[data-feature-card]')
+    .evaluateAll((elements) => elements.map((element) => getComputedStyle(element).gridColumnEnd));
+  expect(featureColumns.every((value) => value === '-1')).toBe(true);
 });
 
 test('loads optimized original hero artwork with stable dimensions', async ({ page }) => {
@@ -300,7 +369,7 @@ test('loads the expanded campaign artwork with stable dimensions', async ({ page
 test('marks every decoded artwork state as loaded', async ({ page }) => {
   test.slow();
   const images = page.locator('picture img');
-  await expect(images).toHaveCount(25);
+  await expect(images).toHaveCount(31);
   await images.evaluateAll((elements) => {
     for (const element of elements) (element as HTMLImageElement).loading = 'eager';
   });
@@ -315,6 +384,24 @@ test('marks every decoded artwork state as loaded', async ({ page }) => {
       { timeout: 15_000 },
     )
     .toBe(true);
+  const dimensions = await images.evaluateAll((elements) =>
+    elements.map((element) => {
+      const image = element as HTMLImageElement;
+      return {
+        height: image.height,
+        naturalHeight: image.naturalHeight,
+        naturalWidth: image.naturalWidth,
+        width: image.width,
+      };
+    }),
+  );
+  expect(
+    dimensions.every(
+      (image) =>
+        image.naturalWidth > 0 && image.naturalHeight > 0 && image.width > 0 && image.height > 0,
+    ),
+  ).toBe(true);
+  await expect(page.locator('picture source[type="image/avif"]')).toHaveCount(31);
 });
 
 test('searches and filters the complete catalog', async ({ page }) => {
@@ -330,6 +417,27 @@ test('searches and filters the complete catalog', async ({ page }) => {
   await expect(formsFilter).toHaveAttribute('aria-pressed', 'true');
   await expect(allFilter).toHaveAttribute('aria-pressed', 'false');
   await expect(page.locator('[data-component-card]:visible')).toHaveCount(10);
+  await expect(page.locator('#result-count')).toHaveText('10 components');
+  expect(
+    await page
+      .locator('[data-component-card]:visible')
+      .evaluateAll((elements) => elements.map((element) => element.id)),
+  ).toEqual([
+    'ps-field',
+    'ps-input',
+    'ps-textarea',
+    'ps-select',
+    'ps-option',
+    'ps-checkbox',
+    'ps-radio-group',
+    'ps-radio',
+    'ps-switch',
+    'ps-range',
+  ]);
+  await page.locator('#catalog-search input').fill('input');
+  await expect(page.locator('[data-component-card]:visible')).toHaveCount(1);
+  await expect(page.locator('#ps-input')).toHaveAttribute('data-feature-card', '');
+  await expect(page.locator('#result-count')).toHaveText('1 component');
 });
 
 test('persists all three themes', async ({ page }) => {
@@ -342,6 +450,7 @@ test('persists all three themes', async ({ page }) => {
 });
 
 test('supports responsive site navigation selection and Escape', async ({ page }) => {
+  test.slow();
   await page.setViewportSize({ width: 390, height: 844 });
   const toggle = page.getByRole('button', { name: 'Toggle site navigation' });
   await toggle.click();
@@ -356,11 +465,29 @@ test('supports responsive site navigation selection and Escape', async ({ page }
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
   await expect(page.locator('.site-header nav')).toBeHidden();
   await expect(toggle).toBeFocused();
+
+  await expect(page.locator('.site-header nav a > span')).toHaveCount(5);
+  expect(await page.locator('.site-header nav a > span').allTextContents()).toEqual([
+    '01',
+    '02',
+    '03',
+    '04',
+    '05',
+  ]);
+  const filters = page.locator('.category-filters');
+  await page.evaluate(() => (document.documentElement.style.scrollBehavior = 'auto'));
+  await filters.evaluate((element) => element.scrollIntoView({ block: 'center' }));
+  await expect(filters).toHaveCSS('scroll-snap-type', 'x');
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(1);
 });
 
 test('tracks scroll progress and the active navigation location', async ({ page }) => {
   const tokenSection = page.locator('#tokens');
-  await tokenSection.evaluate((element) => element.scrollIntoView());
+  await page.evaluate(() => (document.documentElement.style.scrollBehavior = 'auto'));
+  await tokenSection.evaluate((element) => element.scrollIntoView({ block: 'start' }));
   await expect(page.locator('.site-header')).toHaveClass(/is-compact/);
   await expect(page.locator('.site-header nav a[href="#tokens"]')).toHaveAttribute(
     'aria-current',
@@ -377,6 +504,13 @@ test('tracks scroll progress and the active navigation location', async ({ page 
 });
 
 test('shows short-lived copy feedback while keeping the toast', async ({ page }) => {
+  test.slow();
+  await page.evaluate(() => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    for (const element of document.querySelectorAll('[data-reveal]')) {
+      element.classList.add('is-revealed');
+    }
+  });
   await page.evaluate(() => {
     Object.defineProperty(navigator, 'clipboard', {
       configurable: true,
@@ -396,6 +530,12 @@ test('runs form, tabs, accordion, menu, dialog, drawer, and toast interactions',
   page,
 }) => {
   test.slow();
+  await page.evaluate(() => {
+    document.documentElement.style.scrollBehavior = 'auto';
+    for (const element of document.querySelectorAll('[data-reveal]')) {
+      element.classList.add('is-revealed');
+    }
+  });
   const input = page.locator('#ps-input ps-input input');
   await input.fill('Arcade');
   await expect(input).toHaveValue('Arcade');
@@ -421,18 +561,29 @@ test('runs form, tabs, accordion, menu, dialog, drawer, and toast interactions',
 
 test('token controls accept only documented selections', async ({ page }) => {
   await page.locator('[name="primary"]').selectOption('#007d89');
+  await page.locator('[name="radius"]').selectOption('1.5rem');
+  await page.locator('[name="shadow"]').selectOption('0 10px 0 var(--ps-color-border)');
   await expect(page.locator('html')).toHaveCSS('--ps-color-primary', '#007d89');
+  await expect(page.locator('[data-receipt-primary]')).toHaveText('Pool teal · #007d89');
+  await expect(page.locator('[data-receipt-radius]')).toHaveText('Bubble · 1.5rem');
+  await expect(page.locator('[data-receipt-shadow]')).toHaveText('Extra · 10px');
   await page.getByRole('button', { name: 'Reset tokens' }).click();
   expect(
-    await page
-      .locator('html')
-      .evaluate((element) => element.style.getPropertyValue('--ps-color-primary')),
-  ).toBe('');
+    await page.locator('html').evaluate((element) => ({
+      primary: element.style.getPropertyValue('--ps-color-primary'),
+      radius: element.style.getPropertyValue('--ps-radius-md'),
+      shadow: element.style.getPropertyValue('--ps-shadow-md'),
+    })),
+  ).toEqual({ primary: '', radius: '', shadow: '' });
+  await expect(page.locator('[data-receipt-primary]')).toHaveText('Hot pink · #f20a86');
+  await expect(page.locator('[data-receipt-radius]')).toHaveText('Soft · 0.9rem');
+  await expect(page.locator('[data-receipt-shadow]')).toHaveText('Classic · 6px');
 });
 
 test('has no serious axe violations on landing, catalog, forms, and open overlays', async ({
   page,
 }) => {
+  test.slow();
   await page.addStyleTag({
     content: `
       *, *::before, *::after {
@@ -468,6 +619,7 @@ test('has no serious axe violations on landing, catalog, forms, and open overlay
 });
 
 test('honors reduced motion', async ({ page }) => {
+  test.slow();
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.reload();
   await expect(page.locator('html')).not.toHaveClass(/motion-ok/);
@@ -475,25 +627,40 @@ test('honors reduced motion', async ({ page }) => {
   const motionStyles = await page.evaluate(() => {
     const marquee = document.querySelector('.marquee div');
     const reveal = document.querySelector<HTMLElement>('[data-reveal]');
-    const picture = document.querySelector('picture');
+    const picture = document.querySelector('.player-art picture');
+    const tape = document.querySelector('.hero-issue');
+    const featureArtwork = document.querySelector('.feature-artwork img');
+    const receipt = document.querySelector('.style-receipt');
     return {
+      featureArtworkTransform: featureArtwork ? getComputedStyle(featureArtwork).transform : '',
+      featureArtworkTransition: featureArtwork
+        ? getComputedStyle(featureArtwork).transitionDuration
+        : '',
       marqueeAnimation: marquee ? getComputedStyle(marquee).animationName : '',
+      receiptTransform: receipt ? getComputedStyle(receipt).transform : '',
       revealOpacity: reveal ? getComputedStyle(reveal).opacity : '',
       revealTransform: reveal ? getComputedStyle(reveal).transform : '',
       revealTransition: reveal ? getComputedStyle(reveal).transitionDuration : '',
       scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
       shimmerAnimation: picture ? getComputedStyle(picture, '::after').animationName : '',
       shimmerContent: picture ? getComputedStyle(picture, '::after').content : '',
+      tapeAnimation: tape ? getComputedStyle(tape).animationName : '',
+      tapeTransform: tape ? getComputedStyle(tape).transform : '',
     };
   });
   expect(motionStyles).toEqual({
+    featureArtworkTransform: 'none',
+    featureArtworkTransition: '0s',
     marqueeAnimation: 'none',
+    receiptTransform: 'none',
     revealOpacity: '1',
     revealTransform: 'none',
     revealTransition: '0s',
     scrollBehavior: 'auto',
     shimmerAnimation: 'none',
     shimmerContent: 'none',
+    tapeAnimation: 'none',
+    tapeTransform: 'none',
   });
   const artwork = page.locator('.lookbook-card').first();
   await artwork.scrollIntoViewIfNeeded();
@@ -501,6 +668,11 @@ test('honors reduced motion', async ({ page }) => {
   expect(await artwork.evaluate((element) => element.style.getPropertyValue('--shine-x'))).toBe('');
   await page.locator('#theme-switcher').selectOption('midnight');
   await expect(page.locator('html')).not.toHaveClass(/theme-transitioning/);
+  const featureArtwork = page.locator('[data-feature-artwork]').first();
+  await featureArtwork.hover();
+  expect(
+    await featureArtwork.evaluate((element) => element.style.getPropertyValue('--shine-x')),
+  ).toBe('');
 });
 
 for (const theme of ['bubblegum', 'midnight', 'pastel']) {
@@ -585,6 +757,45 @@ for (const theme of ['bubblegum', 'midnight', 'pastel']) {
       for (const element of elements) (element as HTMLElement).style.visibility = 'hidden';
     });
     await expect(page.locator('.quick-start')).toHaveScreenshot(`quick-start-${theme}.png`, {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.02,
+    });
+  });
+
+  test(`390px editorial baselines: ${theme}`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile-chromium');
+    await expect.poll(() => page.viewportSize()?.width).toBe(390);
+    await page.locator('#theme-switcher').selectOption(theme);
+    await page.locator('.site-header, .skip-link').evaluateAll((elements) => {
+      for (const element of elements) (element as HTMLElement).style.visibility = 'hidden';
+    });
+
+    await prepareSectionVisual(page, '#lookbook');
+    await expect(page.locator('#lookbook')).toHaveScreenshot(`lookbook-${theme}-390.png`, {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.02,
+    });
+
+    await prepareSectionVisual(page, '#campaigns');
+    await expect(page.locator('#campaigns')).toHaveScreenshot(`campaign-${theme}-390.png`, {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.02,
+    });
+
+    await prepareSectionVisual(page, '#ps-button');
+    await expect(page.locator('#ps-button')).toHaveScreenshot(`feature-${theme}-390.png`, {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.02,
+    });
+
+    await prepareSectionVisual(page, '.quick-start');
+    await expect(page.locator('.quick-start')).toHaveScreenshot(`quick-start-${theme}-390.png`, {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.02,
+    });
+
+    await prepareSectionVisual(page, '.token-layout');
+    await expect(page.locator('.token-layout')).toHaveScreenshot(`tokens-${theme}-390.png`, {
       animations: 'disabled',
       maxDiffPixelRatio: 0.02,
     });
