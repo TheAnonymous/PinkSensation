@@ -90,7 +90,17 @@ for (const file of expectedFonts) {
 if ([...fileNames].some((file) => file.toLowerCase().includes('righteous'))) {
   throw new Error('Tarball unexpectedly contains the retired Righteous font.');
 }
-const showroomArtwork = ['pop-icon', 'electric-heart', 'midnight-drive'];
+const showroomArtwork = [
+  'after-hours-mall',
+  'boombox-beat',
+  'electric-heart',
+  'glam-flatlay',
+  'heart-perfume',
+  'midnight-drive',
+  'pop-icon',
+  'roller-glam',
+  'sunset-cruise',
+];
 if ([...fileNames].some((file) => showroomArtwork.some((name) => file.includes(name)))) {
   throw new Error('Tarball unexpectedly contains showroom-only artwork.');
 }

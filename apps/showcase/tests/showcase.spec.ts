@@ -34,6 +34,43 @@ const prepareHeroVisual = async (page: Page) => {
   );
 };
 
+const prepareLookbookVisual = async (page: Page, paintFullSection = false) => {
+  await page.evaluate(() => document.fonts.ready);
+  const lookbook = page.locator('[data-artwork-gallery]');
+  const images = lookbook.locator('img');
+  await expect(images).toHaveCount(6);
+  await images.evaluateAll((elements) => {
+    for (const element of elements) (element as HTMLImageElement).loading = 'eager';
+  });
+  await lookbook.scrollIntoViewIfNeeded();
+  await expect
+    .poll(() =>
+      images.evaluateAll((elements) =>
+        elements.every((element) => {
+          const artwork = element as HTMLImageElement;
+          return artwork.complete && artwork.naturalWidth > 0;
+        }),
+      ),
+    )
+    .toBe(true);
+  await images.evaluateAll((elements) =>
+    Promise.all(elements.map((element) => (element as HTMLImageElement).decode())),
+  );
+  if (paintFullSection) {
+    const viewport = page.viewportSize();
+    const lookbookHeight = await lookbook.evaluate((element) => Math.ceil(element.scrollHeight));
+    if (viewport && lookbookHeight > viewport.height) {
+      await page.setViewportSize({ width: viewport.width, height: lookbookHeight });
+    }
+  }
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) =>
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+      ),
+  );
+};
+
 test.beforeEach(async ({ page }) => {
   await page.goto('./');
   await expect(page.locator('body')).toBeVisible();
@@ -76,6 +113,34 @@ test('loads optimized original hero artwork with stable dimensions', async ({ pa
   expect(artwork.every((image) => image.width > 0 && image.height > 0)).toBe(true);
   expect(artwork.every((image) => image.alt === '')).toBe(true);
   await expect(page.locator('.hero picture source[type="image/avif"]')).toHaveCount(5);
+});
+
+test('loads the editorial lookbook artwork with stable dimensions', async ({ page }) => {
+  test.slow();
+  await prepareLookbookVisual(page);
+  const artwork = await page.locator('[data-artwork-gallery] img').evaluateAll((images) =>
+    images.map((element) => {
+      const image = element as HTMLImageElement;
+      return {
+        alt: image.alt,
+        complete: image.complete,
+        height: image.height,
+        naturalHeight: image.naturalHeight,
+        naturalWidth: image.naturalWidth,
+        width: image.width,
+      };
+    }),
+  );
+  expect(artwork.every((image) => image.complete && image.naturalWidth > 0)).toBe(true);
+  expect(artwork.every((image) => image.width > 0 && image.height > 0)).toBe(true);
+  expect(artwork.every((image) => image.alt.length > 0)).toBe(true);
+  await expect(
+    page.locator('[data-artwork-gallery] picture source[type="image/avif"]'),
+  ).toHaveCount(6);
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(1);
 });
 
 test('searches and filters the complete catalog', async ({ page }) => {
@@ -188,6 +253,22 @@ for (const theme of ['bubblegum', 'midnight', 'pastel']) {
     const panel = page.locator('.token-layout');
     await panel.scrollIntoViewIfNeeded();
     await expect(panel).toHaveScreenshot(`tokens-${theme}.png`, {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.02,
+    });
+  });
+
+  test(`lookbook baseline: ${theme}`, async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== 'chromium');
+    await page.locator('#theme-switcher').selectOption(theme);
+    await page.locator('[data-artwork-gallery]').evaluate((element) => {
+      (element as HTMLElement).style.zoom = '0.7';
+    });
+    await prepareLookbookVisual(page, true);
+    await page.locator('.site-header, .skip-link').evaluateAll((elements) => {
+      for (const element of elements) (element as HTMLElement).style.visibility = 'hidden';
+    });
+    await expect(page.locator('[data-artwork-gallery]')).toHaveScreenshot(`lookbook-${theme}.png`, {
       animations: 'disabled',
       maxDiffPixelRatio: 0.02,
     });

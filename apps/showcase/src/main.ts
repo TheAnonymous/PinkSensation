@@ -1,12 +1,24 @@
 import 'pink-sensation/theme.css';
 import 'pink-sensation';
 import type { PsDialog, PsDrawer, PsInput, PsToastStack, ThemeName } from 'pink-sensation';
+import afterHoursMallAvif from './assets/after-hours-mall.avif';
+import afterHoursMallWebp from './assets/after-hours-mall.webp';
+import boomboxBeatAvif from './assets/boombox-beat.avif';
+import boomboxBeatWebp from './assets/boombox-beat.webp';
 import electricHeartAvif from './assets/electric-heart.avif';
 import electricHeartWebp from './assets/electric-heart.webp';
+import glamFlatlayAvif from './assets/glam-flatlay.avif';
+import glamFlatlayWebp from './assets/glam-flatlay.webp';
+import heartPerfumeAvif from './assets/heart-perfume.avif';
+import heartPerfumeWebp from './assets/heart-perfume.webp';
 import midnightDriveAvif from './assets/midnight-drive.avif';
 import midnightDriveWebp from './assets/midnight-drive.webp';
 import popIconAvif from './assets/pop-icon.avif';
 import popIconWebp from './assets/pop-icon.webp';
+import rollerGlamAvif from './assets/roller-glam.avif';
+import rollerGlamWebp from './assets/roller-glam.webp';
+import sunsetCruiseAvif from './assets/sunset-cruise.avif';
+import sunsetCruiseWebp from './assets/sunset-cruise.webp';
 import { catalog, categories, type DocRow } from './catalog.js';
 import './styles.css';
 
@@ -50,7 +62,7 @@ app.innerHTML = `
   <header class="site-header" id="top">
     <a class="mini-logo" href="#top" aria-label="Pink Sensation home">PS<span>✦</span></a>
     <nav aria-label="Primary navigation">
-      <a href="#catalog">Components</a><a href="#tokens">Tokens</a><a href="#accessibility">Accessibility</a>
+      <a href="#lookbook">Lookbook</a><a href="#catalog">Components</a><a href="#tokens">Tokens</a><a href="#accessibility">Accessibility</a>
     </nav>
     <label class="theme-control">Theme
       <select id="theme-switcher" aria-label="Color theme">
@@ -102,6 +114,39 @@ app.innerHTML = `
     </section>
 
     <div class="marquee" aria-label="Pink Sensation features"><div>OPEN SHADOW DOM ✦ FORM ASSOCIATED ✦ THREE THEMES ✦ TYPESCRIPT ✦ COPY, PASTE, SPARKLE ✦ OPEN SHADOW DOM ✦ FORM ASSOCIATED ✦ THREE THEMES ✦ TYPESCRIPT ✦</div></div>
+
+    <section id="lookbook" class="lookbook section-shell" aria-labelledby="lookbook-title" data-artwork-gallery>
+      <div class="lookbook-heading">
+        <div><span class="eyebrow">The visual mixtape</span><h2 id="lookbook-title">Mall lights. Big nights.</h2></div>
+        <p>Original artwork built for the world around the components: chrome, beauty counters, roller-rink drama, and one perfect drive into sunset.</p>
+      </div>
+      <div class="lookbook-grid">
+        <figure class="lookbook-card lookbook-mall">
+          <picture><source type="image/avif" srcset="${afterHoursMallAvif}"><img src="${afterHoursMallWebp}" width="1200" height="800" alt="Pink-lit mall atrium with chrome escalators and palm trees." loading="lazy" decoding="async"></picture>
+          <figcaption><span>01 · After hours</span><strong>Mall lights forever</strong></figcaption>
+        </figure>
+        <figure class="lookbook-card lookbook-perfume">
+          <picture><source type="image/avif" srcset="${heartPerfumeAvif}"><img src="${heartPerfumeWebp}" width="720" height="1080" alt="Heart-shaped pink perfume bottle with a chrome star cap." loading="lazy" decoding="async"></picture>
+          <figcaption><span>02 · Beauty counter</span><strong>Heart notes</strong></figcaption>
+        </figure>
+        <figure class="lookbook-card lookbook-roller">
+          <picture><source type="image/avif" srcset="${rollerGlamAvif}"><img src="${rollerGlamWebp}" width="720" height="720" alt="Hot-pink chrome roller skate on a cosmic checkerboard plinth." loading="lazy" decoding="async"></picture>
+          <figcaption><span>03 · Friday night</span><strong>Starstruck</strong></figcaption>
+        </figure>
+        <figure class="lookbook-card lookbook-flatlay">
+          <picture><source type="image/avif" srcset="${glamFlatlayAvif}"><img src="${glamFlatlayWebp}" width="720" height="720" alt="Pink sunglasses, makeup, pearls, and a cassette arranged on a vanity." loading="lazy" decoding="async"></picture>
+          <figcaption><span>04 · Get ready</span><strong>Vanity mix</strong></figcaption>
+        </figure>
+        <figure class="lookbook-card lookbook-boombox">
+          <picture><source type="image/avif" srcset="${boomboxBeatAvif}"><img src="${boomboxBeatWebp}" width="960" height="640" alt="Chrome-and-pink boombox glowing against a violet starburst." loading="lazy" decoding="async"></picture>
+          <figcaption><span>05 · Turn it up</span><strong>Big beat energy</strong></figcaption>
+        </figure>
+        <figure class="lookbook-card lookbook-cruise">
+          <picture><source type="image/avif" srcset="${sunsetCruiseAvif}"><img src="${sunsetCruiseWebp}" width="1200" height="800" alt="View from a pink convertible on a palm-lined road at neon sunset." loading="lazy" decoding="async"></picture>
+          <figcaption><span>06 · One more song</span><strong>Sunset cruise</strong></figcaption>
+        </figure>
+      </div>
+    </section>
 
     <section class="quick-start section-shell" aria-labelledby="start-title">
       <div><span class="eyebrow">One tiny ritual</span><h2 id="start-title">Get glossy in two imports.</h2><p>Register everything or import only the self-registering component you need. Then put a theme on any ancestor.</p></div>
