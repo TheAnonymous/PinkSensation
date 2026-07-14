@@ -43,6 +43,13 @@ test('loads the landing page and all component documentation', async ({ page }) 
   await expect(page.getByRole('heading', { level: 1, name: /pink sensation/i })).toBeVisible();
   await expect(page.locator('[data-component-card]')).toHaveCount(39);
   await expect(page.locator('ps-button').first()).toBeVisible();
+  const favicon = page.locator('link[rel="icon"]');
+  await expect(favicon).toHaveAttribute('type', 'image/svg+xml');
+  const faviconUrl = await favicon.getAttribute('href');
+  expect(faviconUrl).toBeTruthy();
+  const faviconResponse = await page.request.get(new URL(faviconUrl!, page.url()).href);
+  expect(faviconResponse.status()).toBe(200);
+  expect(faviconResponse.headers()['content-type']).toContain('image/svg+xml');
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
