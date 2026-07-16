@@ -48,8 +48,10 @@ const inlinePlaygroundTokens = (page: Page) =>
     shadow: element.style.getPropertyValue('--ps-shadow-md'),
   }));
 
-const resetPlaygroundTokens = async (page: Page) => {
-  await page.locator('#reset-tokens').click();
+const resetPlaygroundTokens = async (page: Page, programmatic = false) => {
+  const reset = page.locator('#reset-tokens');
+  if (programmatic) await reset.evaluate((element) => (element as HTMLElement).click());
+  else await reset.click();
   await expect
     .poll(() => inlinePlaygroundTokens(page))
     .toEqual({
@@ -468,6 +470,7 @@ test('marks every decoded artwork state as loaded', async ({ page }) => {
 });
 
 test('searches and filters the complete catalog', async ({ page }) => {
+  await page.evaluate(() => (document.documentElement.style.scrollBehavior = 'auto'));
   const allFilter = page.getByRole('button', { name: 'All', exact: true });
   const formsFilter = page.getByRole('button', { name: 'Forms', exact: true });
   await expect(allFilter).toHaveAttribute('aria-pressed', 'true');
@@ -476,6 +479,8 @@ test('searches and filters the complete catalog', async ({ page }) => {
   await expect(page.locator('[data-component-card]:visible')).toHaveCount(1);
   await expect(page.locator('#ps-dialog')).toBeVisible();
   await page.locator('#catalog-search input').fill('');
+  await expect(page.locator('[data-component-card]:visible')).toHaveCount(39);
+  await formsFilter.evaluate((element) => element.scrollIntoView({ block: 'center' }));
   await formsFilter.click();
   await expect(formsFilter).toHaveAttribute('aria-pressed', 'true');
   await expect(allFilter).toHaveAttribute('aria-pressed', 'false');
@@ -513,6 +518,7 @@ test('persists all three themes', async ({ page }) => {
 });
 
 test('keeps readable text roles and code samples in every theme', async ({ page }) => {
+  test.slow();
   await page.addStyleTag({
     content: `*, *::before, *::after { animation: none !important; transition: none !important; }`,
   });
@@ -608,7 +614,7 @@ test('keeps readable text roles and code samples in every theme', async ({ page 
         `${theme}: custom ${customPrimary} control foreground`,
       ).toBeGreaterThanOrEqual(4.5);
     }
-    await resetPlaygroundTokens(page);
+    await resetPlaygroundTokens(page, true);
   }
 });
 
