@@ -592,6 +592,16 @@ test('keeps readable text roles and code samples in every theme', async ({ page 
       `${theme}: feature code sample`,
     ).toBeGreaterThanOrEqual(4.5);
 
+    const quickStartInstruction = await page
+      .locator('.code-instruction')
+      .evaluate((element) => getComputedStyle(element).color);
+    for (const background of ['#171125', '#2e0b3d']) {
+      expect(
+        contrastRatio(quickStartInstruction, background),
+        `${theme}: quick-start instruction on ${background}`,
+      ).toBeGreaterThanOrEqual(4.5);
+    }
+
     for (const customPrimary of ['#f20a86', '#7929d6', '#007d89']) {
       await page.locator('[name="primary"]').selectOption(customPrimary);
       const customTokens = await page.locator('html').evaluate((element, names) => {

@@ -2319,14 +2319,14 @@ footer > a:last-of-type {
   left: -1rem;
   background: var(--scrap-paper);
 }
-.code-instruction {
+.quick-start .code-instruction {
   margin: 0;
   padding: 1.3rem 1.4rem 1.05rem 3rem;
   border-bottom: 1px dashed #806d8d;
   color: #f8deef;
   font-size: 0.85rem;
 }
-.code-instruction strong {
+.quick-start .code-instruction strong {
   color: #71edf5;
 }
 .quick-start-artwork::after {
