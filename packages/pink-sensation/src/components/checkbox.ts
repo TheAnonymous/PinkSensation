@@ -32,6 +32,11 @@ export class PsCheckbox extends PsFormControl {
           var(--ps-color-surface-raised)
         );
         box-shadow: var(--ps-shadow-sm);
+        transform: rotate(0deg) scale(1);
+        transition:
+          transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out),
+          background var(--ps-duration-fast) ease,
+          box-shadow var(--ps-duration-fast) ease;
       }
       input {
         position: absolute;
@@ -45,13 +50,22 @@ export class PsCheckbox extends PsFormControl {
       .mark {
         opacity: 0;
         font-weight: 1000;
+        transform: rotate(-18deg) scale(0.35);
+        transition:
+          opacity var(--ps-duration-fast) ease,
+          transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out);
       }
       .box[data-checked] {
         background: var(--ps-color-primary);
         color: var(--ps-color-primary-contrast);
+        box-shadow:
+          var(--ps-shadow-sm),
+          0 0 0 0.2rem color-mix(in srgb, var(--ps-color-primary) 16%, transparent);
+        transform: rotate(-3deg) scale(1.08);
       }
       .box[data-checked] .mark {
         opacity: 1;
+        transform: rotate(0deg) scale(1);
       }
     `,
   ];

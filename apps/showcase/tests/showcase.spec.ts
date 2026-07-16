@@ -1,6 +1,66 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, test, type Page } from '@playwright/test';
 
+type Rgb = [number, number, number];
+
+const parseCssColor = (value: string): Rgb => {
+  const color = value.trim();
+  if (color.startsWith('#')) {
+    const hex = color.slice(1);
+    const expanded = hex.length === 3 ? [...hex].map((part) => `${part}${part}`).join('') : hex;
+    if (expanded.length === 6)
+      return [0, 2, 4].map((index) => Number.parseInt(expanded.slice(index, index + 2), 16)) as Rgb;
+  }
+  const channels = color
+    .match(/[\d.]+/g)
+    ?.slice(0, 3)
+    .map(Number);
+  if (channels?.length === 3)
+    return (
+      color.startsWith('color(srgb') ? channels.map((channel) => channel * 255) : channels
+    ) as Rgb;
+  throw new Error(`Unsupported CSS color: ${value}`);
+};
+
+const relativeLuminance = ([red, green, blue]: Rgb) => {
+  const linear = [red, green, blue].map((channel) => {
+    const normalized = channel / 255;
+    return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4;
+  }) as Rgb;
+  return linear[0] * 0.2126 + linear[1] * 0.7152 + linear[2] * 0.0722;
+};
+
+const contrastRatio = (foreground: string, background: string) => {
+  const foregroundLuminance = relativeLuminance(parseCssColor(foreground));
+  const backgroundLuminance = relativeLuminance(parseCssColor(background));
+  return (
+    (Math.max(foregroundLuminance, backgroundLuminance) + 0.05) /
+    (Math.min(foregroundLuminance, backgroundLuminance) + 0.05)
+  );
+};
+
+const inlinePlaygroundTokens = (page: Page) =>
+  page.locator('html').evaluate((element) => ({
+    primary: element.style.getPropertyValue('--ps-color-primary'),
+    primaryContrast: element.style.getPropertyValue('--ps-color-primary-contrast'),
+    primaryText: element.style.getPropertyValue('--ps-color-primary-text'),
+    radius: element.style.getPropertyValue('--ps-radius-md'),
+    shadow: element.style.getPropertyValue('--ps-shadow-md'),
+  }));
+
+const resetPlaygroundTokens = async (page: Page) => {
+  await page.locator('#reset-tokens').click();
+  await expect
+    .poll(() => inlinePlaygroundTokens(page))
+    .toEqual({
+      primary: '',
+      primaryContrast: '',
+      primaryText: '',
+      radius: '',
+      shadow: '',
+    });
+};
+
 const prepareHeroVisual = async (page: Page) => {
   await page.evaluate(() => document.fonts.ready);
   const images = page.locator('.hero img');
@@ -211,6 +271,9 @@ const prepareSectionVisual = async (page: Page, selector: string) => {
   }
   await section.locator('[data-reveal]').evaluateAll((elements) => {
     for (const element of elements) element.classList.add('is-revealed');
+  });
+  await section.locator('[data-motion-card]').evaluateAll((elements) => {
+    for (const element of elements) element.classList.add('is-motion-visible');
   });
   if (await section.getAttribute('data-reveal'))
     await section.evaluate((element) => element.classList.add('is-revealed'));
@@ -449,6 +512,106 @@ test('persists all three themes', async ({ page }) => {
   await expect(page.locator('html')).toHaveAttribute('data-ps-theme', 'pastel');
 });
 
+test('keeps readable text roles and code samples in every theme', async ({ page }) => {
+  await page.addStyleTag({
+    content: `*, *::before, *::after { animation: none !important; transition: none !important; }`,
+  });
+  const tokenNames = [
+    '--ps-color-bg',
+    '--ps-color-surface',
+    '--ps-color-surface-raised',
+    '--ps-color-text',
+    '--ps-color-muted',
+    '--ps-color-primary',
+    '--ps-color-primary-text',
+    '--ps-color-primary-contrast',
+    '--ps-color-secondary-text',
+    '--ps-color-accent-text',
+  ];
+
+  for (const theme of ['bubblegum', 'midnight', 'pastel']) {
+    await page.locator('#theme-switcher').selectOption(theme);
+    const tokens = await page.locator('html').evaluate((element, names) => {
+      const styles = getComputedStyle(element);
+      return Object.fromEntries(names.map((name) => [name, styles.getPropertyValue(name).trim()]));
+    }, tokenNames);
+    const token = (name: string) => {
+      const value = tokens[name];
+      if (!value) throw new Error(`${theme}: missing ${name}`);
+      return value;
+    };
+    const surfaces = ['--ps-color-bg', '--ps-color-surface', '--ps-color-surface-raised'];
+    for (const foreground of [
+      '--ps-color-text',
+      '--ps-color-muted',
+      '--ps-color-primary-text',
+      '--ps-color-secondary-text',
+      '--ps-color-accent-text',
+    ]) {
+      for (const surface of surfaces) {
+        expect(
+          contrastRatio(token(foreground), token(surface)),
+          `${theme}: ${foreground} on ${surface}`,
+        ).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+    expect(
+      contrastRatio(token('--ps-color-primary-contrast'), token('--ps-color-primary')),
+      `${theme}: primary control foreground`,
+    ).toBeGreaterThanOrEqual(4.5);
+
+    const categoryTextColors = await page
+      .locator('.component-heading .eyebrow, .component-serial, .stage-label')
+      .evaluateAll((elements) => [
+        ...new Set(elements.map((element) => getComputedStyle(element).color)),
+      ]);
+    for (const foreground of categoryTextColors) {
+      for (const surface of surfaces) {
+        expect(
+          contrastRatio(foreground, token(surface)),
+          `${theme}: catalog label ${foreground} on ${surface}`,
+        ).toBeGreaterThanOrEqual(4.5);
+      }
+    }
+
+    const codeSample = await page
+      .locator('.feature-code')
+      .first()
+      .evaluate((element) => ({
+        background: getComputedStyle(element).backgroundColor,
+        foreground: getComputedStyle(element.querySelector('code')!).color,
+      }));
+    expect(
+      contrastRatio(codeSample.foreground, codeSample.background),
+      `${theme}: feature code sample`,
+    ).toBeGreaterThanOrEqual(4.5);
+
+    for (const customPrimary of ['#f20a86', '#7929d6', '#007d89']) {
+      await page.locator('[name="primary"]').selectOption(customPrimary);
+      const customTokens = await page.locator('html').evaluate((element, names) => {
+        const styles = getComputedStyle(element);
+        return Object.fromEntries(
+          names.map((name) => [name, styles.getPropertyValue(name).trim()]),
+        );
+      }, tokenNames);
+      for (const surface of surfaces) {
+        expect(
+          contrastRatio(customTokens['--ps-color-primary-text']!, customTokens[surface]!),
+          `${theme}: custom ${customPrimary} text on ${surface}`,
+        ).toBeGreaterThanOrEqual(4.5);
+      }
+      expect(
+        contrastRatio(
+          customTokens['--ps-color-primary-contrast']!,
+          customTokens['--ps-color-primary']!,
+        ),
+        `${theme}: custom ${customPrimary} control foreground`,
+      ).toBeGreaterThanOrEqual(4.5);
+    }
+    await resetPlaygroundTokens(page);
+  }
+});
+
 test('supports responsive site navigation selection and Escape', async ({ page }) => {
   test.slow();
   await page.setViewportSize({ width: 390, height: 844 });
@@ -564,17 +727,15 @@ test('token controls accept only documented selections', async ({ page }) => {
   await page.locator('[name="radius"]').selectOption('1.5rem');
   await page.locator('[name="shadow"]').selectOption('0 10px 0 var(--ps-color-border)');
   await expect(page.locator('html')).toHaveCSS('--ps-color-primary', '#007d89');
+  await expect(page.locator('html')).toHaveCSS('--ps-color-primary-text', '#00627a');
+  await expect(page.locator('html')).toHaveCSS('--ps-color-primary-contrast', '#ffffff');
+  await page.locator('#theme-switcher').selectOption('midnight');
+  await expect(page.locator('html')).toHaveCSS('--ps-color-primary-text', '#55e6f8');
+  await expect(page.locator('html')).toHaveCSS('--ps-color-primary-contrast', '#ffffff');
   await expect(page.locator('[data-receipt-primary]')).toHaveText('Pool teal · #007d89');
   await expect(page.locator('[data-receipt-radius]')).toHaveText('Bubble · 1.5rem');
   await expect(page.locator('[data-receipt-shadow]')).toHaveText('Extra · 10px');
-  await page.getByRole('button', { name: 'Reset tokens' }).click();
-  expect(
-    await page.locator('html').evaluate((element) => ({
-      primary: element.style.getPropertyValue('--ps-color-primary'),
-      radius: element.style.getPropertyValue('--ps-radius-md'),
-      shadow: element.style.getPropertyValue('--ps-shadow-md'),
-    })),
-  ).toEqual({ primary: '', radius: '', shadow: '' });
+  await resetPlaygroundTokens(page);
   await expect(page.locator('[data-receipt-primary]')).toHaveText('Hot pink · #f20a86');
   await expect(page.locator('[data-receipt-radius]')).toHaveText('Soft · 0.9rem');
   await expect(page.locator('[data-receipt-shadow]')).toHaveText('Classic · 6px');
@@ -625,6 +786,11 @@ test('honors reduced motion', async ({ page }) => {
   await expect(page.locator('html')).not.toHaveClass(/motion-ok/);
   await expect(page.locator('html')).not.toHaveClass(/pointer-glow/);
   const motionStyles = await page.evaluate(() => {
+    const normalizedTransform = (element: Element | null) => {
+      if (!element) return '';
+      const value = getComputedStyle(element).transform;
+      return value === 'matrix(1, 0, 0, 1, 0, 0)' ? 'none' : value;
+    };
     const marquee = document.querySelector('.marquee div');
     const reveal = document.querySelector<HTMLElement>('[data-reveal]');
     const picture = document.querySelector('.player-art picture');
@@ -632,20 +798,20 @@ test('honors reduced motion', async ({ page }) => {
     const featureArtwork = document.querySelector('.feature-artwork img');
     const receipt = document.querySelector('.style-receipt');
     return {
-      featureArtworkTransform: featureArtwork ? getComputedStyle(featureArtwork).transform : '',
+      featureArtworkTransform: normalizedTransform(featureArtwork),
       featureArtworkTransition: featureArtwork
         ? getComputedStyle(featureArtwork).transitionDuration
         : '',
       marqueeAnimation: marquee ? getComputedStyle(marquee).animationName : '',
-      receiptTransform: receipt ? getComputedStyle(receipt).transform : '',
+      receiptTransform: normalizedTransform(receipt),
       revealOpacity: reveal ? getComputedStyle(reveal).opacity : '',
-      revealTransform: reveal ? getComputedStyle(reveal).transform : '',
+      revealTransform: normalizedTransform(reveal),
       revealTransition: reveal ? getComputedStyle(reveal).transitionDuration : '',
       scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
       shimmerAnimation: picture ? getComputedStyle(picture, '::after').animationName : '',
       shimmerContent: picture ? getComputedStyle(picture, '::after').content : '',
       tapeAnimation: tape ? getComputedStyle(tape).animationName : '',
-      tapeTransform: tape ? getComputedStyle(tape).transform : '',
+      tapeTransform: normalizedTransform(tape),
     };
   });
   expect(motionStyles).toEqual({
@@ -673,6 +839,46 @@ test('honors reduced motion', async ({ page }) => {
   expect(
     await featureArtwork.evaluate((element) => element.style.getPropertyValue('--shine-x')),
   ).toBe('');
+});
+
+test('uses scroll and pointer input for tactile motion', async ({ page }, testInfo) => {
+  test.slow();
+  test.skip(testInfo.project.name === 'mobile-chromium');
+  await expect(page.locator('html')).toHaveClass(/motion-ok/);
+  await expect(page.locator('.hero-board')).toHaveCSS('animation-name', 'hero-cover-arrive');
+
+  await page.evaluate(async () => {
+    window.scrollTo(0, 240);
+    window.dispatchEvent(new Event('scroll'));
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve())),
+    );
+  });
+  await expect
+    .poll(
+      () =>
+        page
+          .locator('.hero')
+          .evaluate((element) => element.style.getPropertyValue('--hero-scroll')),
+      { timeout: 15_000 },
+    )
+    .not.toBe('0.000');
+
+  const artwork = page.locator('.lookbook-card').first();
+  await artwork.scrollIntoViewIfNeeded();
+  const bounds = await artwork.boundingBox();
+  expect(bounds).not.toBeNull();
+  await page.mouse.move(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
+  await page.mouse.move(bounds!.x + 24, bounds!.y + 24, { steps: 3 });
+  await expect
+    .poll(() => artwork.evaluate((element) => element.style.getPropertyValue('--tilt-y')), {
+      timeout: 15_000,
+    })
+    .not.toBe('0deg');
+  await page.mouse.move(0, 0);
+  await expect
+    .poll(() => artwork.evaluate((element) => element.style.getPropertyValue('--tilt-y')))
+    .toBe('0deg');
 });
 
 for (const theme of ['bubblegum', 'midnight', 'pastel']) {

@@ -26,13 +26,15 @@ export class PsIconButton extends PsButton {
         color: var(--ps-color-primary-contrast);
         box-shadow: var(--ps-shadow-md);
         cursor: pointer;
-        transition: transform var(--ps-duration-fast);
+        transition:
+          transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out),
+          box-shadow var(--ps-duration-normal) var(--ps-ease-pop, ease-out);
       }
       button:hover:not(:disabled) {
-        transform: translateY(-2px) rotate(-3deg);
+        transform: translateY(-3px) rotate(-7deg) scale(1.06);
       }
       button:active:not(:disabled) {
-        transform: translateY(4px);
+        transform: translateY(4px) rotate(3deg) scale(0.93);
         box-shadow: var(--ps-shadow-sm);
       }
       :host([variant='secondary']) button {
@@ -50,11 +52,11 @@ export class PsIconButton extends PsButton {
           var(--ps-color-surface),
           var(--ps-color-surface-raised)
         );
-        color: var(--ps-color-primary);
+        color: var(--ps-color-primary-text);
       }
       :host([variant='ghost']) button {
         background: transparent;
-        color: var(--ps-color-primary);
+        color: var(--ps-color-primary-text);
         box-shadow: none;
         border-color: transparent;
       }

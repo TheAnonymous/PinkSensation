@@ -36,6 +36,9 @@ export class PsRadio extends LitElement {
           var(--ps-color-surface-raised)
         );
         box-shadow: var(--ps-shadow-sm);
+        transition:
+          transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out),
+          box-shadow var(--ps-duration-fast) ease;
       }
       .dot::after {
         content: '';
@@ -44,10 +47,19 @@ export class PsRadio extends LitElement {
         border-radius: 50%;
         background: var(--ps-color-primary);
         transform: scale(0);
-        transition: transform var(--ps-duration-fast);
+        transition: transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out);
       }
       .radio[aria-checked='true'] .dot::after {
         transform: scale(1);
+      }
+      .radio[aria-checked='true'] .dot {
+        box-shadow:
+          var(--ps-shadow-sm),
+          0 0 0 0.2rem color-mix(in srgb, var(--ps-color-primary) 16%, transparent);
+        transform: scale(1.08);
+      }
+      .radio:hover:not(:disabled) .dot {
+        transform: rotate(-4deg) scale(1.08);
       }
     `,
   ];

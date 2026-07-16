@@ -23,7 +23,7 @@ export class PsRange extends PsFormControl {
       output {
         min-width: 3ch;
         font-weight: 900;
-        color: var(--ps-color-primary);
+        color: var(--ps-color-primary-text);
       }
     `,
   ];

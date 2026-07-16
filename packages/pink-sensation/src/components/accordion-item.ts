@@ -33,7 +33,7 @@ export class PsAccordionItem extends LitElement {
       }
       summary::after {
         content: '＋';
-        color: var(--ps-color-primary);
+        color: var(--ps-color-primary-text);
         font-size: 1.25rem;
       }
       details[open] summary::after {

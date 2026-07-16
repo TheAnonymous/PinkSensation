@@ -23,9 +23,12 @@
   --ps-color-text: #25061f;
   --ps-color-muted: #70415f;
   --ps-color-primary: #f20a86;
+  --ps-color-primary-text: #a8005b;
   --ps-color-primary-contrast: #25061f;
   --ps-color-secondary: #7929d6;
+  --ps-color-secondary-text: #7929d6;
   --ps-color-accent: #009ec4;
+  --ps-color-accent-text: #00627a;
   --ps-color-border: #480d45;
   --ps-color-success: #08714d;
   --ps-color-warning: #8a4d00;
@@ -51,6 +54,9 @@
   --ps-font-display: 'Shrikhand', ui-rounded, 'Arial Rounded MT Bold', cursive;
   --ps-duration-fast: 140ms;
   --ps-duration-normal: 240ms;
+  --ps-duration-slow: 480ms;
+  --ps-ease-snap: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ps-ease-pop: cubic-bezier(0.16, 1, 0.3, 1);
   --ps-space-1: 0.25rem;
   --ps-space-2: 0.5rem;
   --ps-space-3: 0.75rem;
@@ -67,9 +73,12 @@
   --ps-color-text: #fff6fc;
   --ps-color-muted: #d8bcd5;
   --ps-color-primary: #ff4fac;
+  --ps-color-primary-text: #ff4fac;
   --ps-color-primary-contrast: #23041a;
   --ps-color-secondary: #7d46dd;
+  --ps-color-secondary-text: #bda8ff;
   --ps-color-accent: #1bd6f2;
+  --ps-color-accent-text: #1bd6f2;
   --ps-color-border: #ffc2ee;
   --ps-color-success: #65e2af;
   --ps-color-warning: #ffc369;
@@ -98,9 +107,12 @@
   --ps-color-text: #34223e;
   --ps-color-muted: #6d5a73;
   --ps-color-primary: #c63178;
+  --ps-color-primary-text: #a51e60;
   --ps-color-primary-contrast: #ffffff;
   --ps-color-secondary: #6956c6;
+  --ps-color-secondary-text: #5541ae;
   --ps-color-accent: #168a97;
+  --ps-color-accent-text: #086a74;
   --ps-color-border: #51365a;
   --ps-color-success: #34745a;
   --ps-color-warning: #8b5b16;
@@ -137,5 +149,6 @@ html {
   :root {
     --ps-duration-fast: 0ms;
     --ps-duration-normal: 0ms;
+    --ps-duration-slow: 0ms;
   }
 }

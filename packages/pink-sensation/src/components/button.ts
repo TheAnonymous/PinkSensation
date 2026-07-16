@@ -34,8 +34,8 @@ export class PsButton extends LitElement {
         text-shadow: 0 1px 0 color-mix(in srgb, white 34%, transparent);
         transform: translateY(0);
         transition:
-          transform var(--ps-duration-fast),
-          box-shadow var(--ps-duration-fast);
+          transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out),
+          box-shadow var(--ps-duration-normal) var(--ps-ease-pop, ease-out);
       }
       button::before {
         content: '';
@@ -48,10 +48,13 @@ export class PsButton extends LitElement {
         pointer-events: none;
       }
       button:hover:not(:disabled) {
-        transform: translateY(-2px);
+        transform: translateY(-3px) rotate(-0.45deg) scale(1.015);
+        box-shadow:
+          0 9px 0 var(--ps-color-border),
+          0 16px 28px color-mix(in srgb, var(--ps-color-primary) 28%, transparent);
       }
       button:active:not(:disabled) {
-        transform: translateY(4px);
+        transform: translateY(4px) scale(0.975);
         box-shadow: var(--ps-shadow-sm);
       }
       :host([variant='secondary']) button {
@@ -69,12 +72,12 @@ export class PsButton extends LitElement {
           var(--ps-color-surface),
           var(--ps-color-surface-raised)
         );
-        color: var(--ps-color-primary);
+        color: var(--ps-color-primary-text);
       }
       :host([variant='ghost']) button {
         border-color: transparent;
         background: transparent;
-        color: var(--ps-color-primary);
+        color: var(--ps-color-primary-text);
         box-shadow: none;
         text-shadow: none;
       }
@@ -94,6 +97,13 @@ export class PsButton extends LitElement {
       ::slotted([slot='prefix']),
       ::slotted([slot='suffix']) {
         line-height: 1;
+        transition: transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out);
+      }
+      button:hover:not(:disabled) ::slotted([slot='prefix']) {
+        transform: translateX(-0.12rem) rotate(-8deg);
+      }
+      button:hover:not(:disabled) ::slotted([slot='suffix']) {
+        transform: translateX(0.18rem) rotate(5deg);
       }
     `,
   ];

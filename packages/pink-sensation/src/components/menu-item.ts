@@ -27,7 +27,7 @@ export class PsMenuItem extends LitElement {
       button:hover,
       button:focus-visible {
         background: var(--ps-color-surface-raised);
-        color: var(--ps-color-primary);
+        color: var(--ps-color-primary-text);
       }
     `,
   ];

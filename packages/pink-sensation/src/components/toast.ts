@@ -11,7 +11,8 @@ export class PsToast extends LitElement {
     css`
       :host {
         display: block;
-        animation: arrive var(--ps-duration-normal) ease-out;
+        transform-origin: right center;
+        animation: arrive var(--ps-duration-slow, 480ms) var(--ps-ease-pop, ease-out);
       }
       .toast {
         display: grid;
@@ -52,11 +53,18 @@ export class PsToast extends LitElement {
         color: inherit;
         font-size: 1.35rem;
         cursor: pointer;
+        transition: transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out);
+      }
+      button:hover {
+        transform: rotate(9deg) scale(1.12);
       }
       @keyframes arrive {
         from {
           opacity: 0;
-          transform: translateX(1rem);
+          transform: translateX(2rem) rotate(2deg) scale(0.92);
+        }
+        72% {
+          transform: translateX(-0.2rem) rotate(-0.35deg) scale(1.015);
         }
       }
       @media (prefers-reduced-motion: reduce) {

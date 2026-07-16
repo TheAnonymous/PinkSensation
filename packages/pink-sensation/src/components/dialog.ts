@@ -64,6 +64,13 @@ export class PsDialog extends LitElement {
         color: inherit;
         font-size: 1.2rem;
         cursor: pointer;
+        transition: transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out);
+      }
+      button:hover {
+        transform: rotate(8deg) scale(1.08);
+      }
+      button:active {
+        transform: rotate(-4deg) scale(0.94);
       }
     `,
   ];

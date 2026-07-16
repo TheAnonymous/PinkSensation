@@ -26,7 +26,7 @@ export class PsTab extends LitElement {
           var(--ps-color-surface-raised),
           var(--ps-color-surface)
         );
-        color: var(--ps-color-primary);
+        color: var(--ps-color-primary-text);
         box-shadow: inset 0 2px 0 color-mix(in srgb, white 65%, transparent);
       }
       .tab {

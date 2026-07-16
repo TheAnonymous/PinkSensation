@@ -32,7 +32,10 @@ export class PsSwitch extends PsCheckbox {
         border-radius: 99px;
         background: var(--ps-color-muted);
         box-shadow: var(--ps-shadow-sm);
-        transition: background var(--ps-duration-fast);
+        transition:
+          background var(--ps-duration-fast) ease,
+          transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out),
+          box-shadow var(--ps-duration-normal) var(--ps-ease-pop, ease-out);
       }
       .mark {
         position: absolute;
@@ -42,7 +45,10 @@ export class PsSwitch extends PsCheckbox {
         height: 1rem;
         border-radius: 50%;
         background: #fff;
-        transition: transform var(--ps-duration-fast);
+        box-shadow: 0 1px 0 rgb(0 0 0 / 18%);
+        transition:
+          transform var(--ps-duration-normal) var(--ps-ease-pop, ease-out),
+          box-shadow var(--ps-duration-fast) ease;
         font-size: 0;
       }
       .box[data-checked] {
@@ -51,9 +57,14 @@ export class PsSwitch extends PsCheckbox {
           var(--ps-color-primary),
           color-mix(in srgb, var(--ps-color-primary) 58%, var(--ps-color-secondary))
         );
+        box-shadow:
+          var(--ps-shadow-sm),
+          0 0 0 0.2rem color-mix(in srgb, var(--ps-color-primary) 16%, transparent);
+        transform: rotate(-1deg) scale(1.03);
       }
       .box[data-checked] .mark {
-        transform: translateX(1.25rem);
+        box-shadow: -0.2rem 0 0 color-mix(in srgb, white 36%, transparent);
+        transform: translateX(1.25rem) rotate(180deg) scale(1.08);
       }
       input:focus-visible + .box {
         outline: 3px solid var(--ps-color-focus);

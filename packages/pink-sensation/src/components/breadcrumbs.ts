@@ -24,7 +24,7 @@ export class PsBreadcrumbs extends LitElement {
         color: var(--ps-color-muted);
       }
       ::slotted(*) {
-        color: var(--ps-color-primary);
+        color: var(--ps-color-primary-text);
         font-weight: 750;
       }
     `,

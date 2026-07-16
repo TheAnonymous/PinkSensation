@@ -337,6 +337,25 @@ document.body.dataset.psTheme = 'bubblegum';</code></pre><button type="button" d
 `;
 
 const themes: ThemeName[] = ['bubblegum', 'midnight', 'pastel'];
+const primaryTextColors: Record<ThemeName, Record<string, string>> = {
+  bubblegum: { '#007d89': '#00627a', '#7929d6': '#6420b3', '#f20a86': '#a8005b' },
+  midnight: { '#007d89': '#55e6f8', '#7929d6': '#bda8ff', '#f20a86': '#ff78bc' },
+  pastel: { '#007d89': '#086a74', '#7929d6': '#5541ae', '#f20a86': '#a51e60' },
+};
+const primaryContrastColors: Record<string, string> = {
+  '#007d89': '#ffffff',
+  '#7929d6': '#ffffff',
+  '#f20a86': '#25061f',
+};
+const syncCustomPrimaryRoles = (theme: ThemeName, primary: string) => {
+  const normalizedPrimary = primary.toLowerCase();
+  const readablePrimary = primaryTextColors[theme][normalizedPrimary];
+  const primaryContrast = primaryContrastColors[normalizedPrimary];
+  if (readablePrimary && primaryContrast) {
+    document.documentElement.style.setProperty('--ps-color-primary-text', readablePrimary);
+    document.documentElement.style.setProperty('--ps-color-primary-contrast', primaryContrast);
+  }
+};
 const themeSwitcher = document.querySelector<HTMLSelectElement>('#theme-switcher');
 const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 let themeTransitionTimer = 0;
@@ -355,6 +374,8 @@ themeSwitcher?.addEventListener('change', () => {
     );
   }
   document.documentElement.dataset.psTheme = theme;
+  const customPrimary = document.documentElement.style.getPropertyValue('--ps-color-primary');
+  if (customPrimary) syncCustomPrimaryRoles(theme, customPrimary);
   try {
     localStorage.setItem('ps-theme', theme);
   } catch {
@@ -491,7 +512,14 @@ const updateStyleReceipt = () => {
 const applyTokens = () => {
   if (!tokenForm) return;
   const values = new FormData(tokenForm);
-  document.documentElement.style.setProperty('--ps-color-primary', String(values.get('primary')));
+  const primary = String(values.get('primary'));
+  document.documentElement.style.setProperty('--ps-color-primary', primary);
+  syncCustomPrimaryRoles(
+    themes.includes(document.documentElement.dataset.psTheme as ThemeName)
+      ? (document.documentElement.dataset.psTheme as ThemeName)
+      : 'bubblegum',
+    primary,
+  );
   document.documentElement.style.setProperty('--ps-radius-md', String(values.get('radius')));
   document.documentElement.style.setProperty('--ps-shadow-md', String(values.get('shadow')));
   updateStyleReceipt();
@@ -499,7 +527,13 @@ const applyTokens = () => {
 tokenForm?.addEventListener('change', applyTokens);
 document.querySelector('#reset-tokens')?.addEventListener('click', () => {
   tokenForm?.reset();
-  for (const token of ['--ps-color-primary', '--ps-radius-md', '--ps-shadow-md'])
+  for (const token of [
+    '--ps-color-primary',
+    '--ps-color-primary-text',
+    '--ps-color-primary-contrast',
+    '--ps-radius-md',
+    '--ps-shadow-md',
+  ])
     document.documentElement.style.removeProperty(token);
   updateStyleReceipt();
 });
@@ -552,6 +586,11 @@ const syncViewportState = () => {
     '--scroll-progress',
     `${Math.min(100, Math.max(0, (window.scrollY / maxScroll) * 100))}%`,
   );
+  const heroProgress = hero
+    ? Math.min(1, Math.max(0, window.scrollY / Math.max(1, hero.offsetHeight * 0.82)))
+    : 0;
+  hero?.style.setProperty('--hero-scroll', heroProgress.toFixed(3));
+  hero?.classList.toggle('has-scrolled', heroProgress > 0.04);
   const compactAt = hero ? hero.offsetTop + hero.offsetHeight - siteHeader.offsetHeight : 120;
   siteHeader.classList.toggle('is-compact', window.scrollY >= compactAt);
 
@@ -611,16 +650,47 @@ const artworkCards = [
     '.lookbook-card, .campaign-card, .glam-card, .quick-start-artwork, .feature-artwork',
   ),
 ];
-artworkCards.forEach((card) => {
+const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+artworkCards.forEach((card, index) => {
   card.dataset.artworkCard = '';
+  card.dataset.motionCard = '';
+  card.style.setProperty('--motion-delay', `${(index % 6) * 70}ms`);
+  card.style.setProperty('--motion-x', `${index % 2 === 0 ? -1 : 1}rem`);
   card.addEventListener('pointermove', (event) => {
-    if (motionQuery.matches || !window.matchMedia('(hover: hover) and (pointer: fine)').matches)
-      return;
+    if (motionQuery.matches || !finePointerQuery.matches) return;
+    card.classList.add('is-pointer-active');
     const bounds = card.getBoundingClientRect();
-    card.style.setProperty('--shine-x', `${event.clientX - bounds.left}px`);
-    card.style.setProperty('--shine-y', `${event.clientY - bounds.top}px`);
+    const x = event.clientX - bounds.left;
+    const y = event.clientY - bounds.top;
+    const relativeX = x / Math.max(1, bounds.width) - 0.5;
+    const relativeY = y / Math.max(1, bounds.height) - 0.5;
+    card.style.setProperty('--shine-x', `${x}px`);
+    card.style.setProperty('--shine-y', `${y}px`);
+    card.style.setProperty('--tilt-x', `${relativeY * -3.2}deg`);
+    card.style.setProperty('--tilt-y', `${relativeX * 4.2}deg`);
+  });
+  card.addEventListener('pointerleave', () => {
+    card.classList.remove('is-pointer-active');
+    card.style.setProperty('--tilt-x', '0deg');
+    card.style.setProperty('--tilt-y', '0deg');
   });
 });
+
+if (motionQuery.matches || !('IntersectionObserver' in window)) {
+  artworkCards.forEach((card) => card.classList.add('is-motion-visible'));
+} else {
+  const motionCardObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('is-motion-visible');
+        observer.unobserve(entry.target);
+      });
+    },
+    { rootMargin: '0px 0px -5% 0px', threshold: 0.12 },
+  );
+  artworkCards.forEach((card) => motionCardObserver.observe(card));
+}
 
 document.querySelectorAll<HTMLPictureElement>('picture').forEach((picture) => {
   const image = picture.querySelector('img');
@@ -641,14 +711,21 @@ document.querySelectorAll<HTMLPictureElement>('picture').forEach((picture) => {
   }
 });
 
-const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
 const syncMotionPreferences = () => {
   document.documentElement.classList.toggle('motion-ok', !motionQuery.matches);
   document.documentElement.classList.toggle(
     'pointer-glow',
     !motionQuery.matches && finePointerQuery.matches,
   );
-  if (motionQuery.matches) document.documentElement.classList.remove('theme-transitioning');
+  if (motionQuery.matches) {
+    document.documentElement.classList.remove('theme-transitioning');
+    artworkCards.forEach((card) => {
+      card.classList.add('is-motion-visible');
+      card.classList.remove('is-pointer-active');
+      card.style.setProperty('--tilt-x', '0deg');
+      card.style.setProperty('--tilt-y', '0deg');
+    });
+  }
 };
 motionQuery.addEventListener('change', syncMotionPreferences);
 finePointerQuery.addEventListener('change', syncMotionPreferences);
